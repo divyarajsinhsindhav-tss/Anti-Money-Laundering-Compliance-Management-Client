@@ -1,0 +1,203 @@
+<div class="p-8 max-w-[1000px] mx-auto animate-in slide-in-from-bottom-4 duration-700">
+  <button 
+    (click)="goBack()"
+    class="flex items-center gap-2 text-secondary hover:text-primary transition-colors mb-8 group"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+    </svg>
+    <span class="text-xs font-bold uppercase tracking-widest">System Workspace</span>
+  </button>
+
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+    <div>
+      <h1 class="text-4xl font-light tracking-tight text-surface-dark mb-2">Provision Environment</h1>
+      <p class="text-secondary font-medium uppercase tracking-[0.2em] text-[10px]">Initialize a new secure multi-tenant instance</p>
+    </div>
+    <div class="flex items-center gap-2 px-3 py-1 bg-surface-light border border-secondary/10" style="border-radius: 0;">
+      <div class="w-2 h-2 bg-success animate-pulse" style="border-radius: 0;"></div>
+      <span class="text-[9px] font-bold text-secondary uppercase tracking-widest">Global Node Status: Active</span>
+    </div>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="mb-8 p-4 bg-danger/5 border border-danger/20 text-center" style="border-radius: 0;">
+      <p class="text-[10px] font-bold text-danger uppercase tracking-widest">{{ errorMessage() }}</p>
+    </div>
+  }
+
+  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="space-y-8">
+    <!-- Section 1: Tenant Identity -->
+    <div class="bg-white border border-secondary/10 shadow-sm" style="border-radius: 0;" formGroupName="tenant">
+      <header class="p-6 border-b border-secondary/5 flex items-center justify-between">
+        <h2 class="text-xs font-bold text-surface-dark uppercase tracking-[0.2em]">01. Environment Parameters</h2>
+        <span class="text-[9px] font-medium text-secondary/40">Core Identity Config</span>
+      </header>
+      
+      <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="space-y-2">
+          <label class="text-[10px] font-bold text-secondary/60 uppercase tracking-widest block">Tenant Identifier (Code)</label>
+          <input 
+            type="text" 
+            formControlName="tenantCode"
+            placeholder="e.g. jpmc_corp"
+            class="w-full bg-surface-light border border-secondary/20 px-4 py-3 text-sm text-surface-dark focus:border-primary focus:outline-none transition-all font-mono"
+            [class.border-danger]="registrationForm.get('tenant.tenantCode')?.invalid && registrationForm.get('tenant.tenantCode')?.touched"
+            style="border-radius: 0;"
+          >
+          @if (registrationForm.get('tenant.tenantCode')?.invalid && registrationForm.get('tenant.tenantCode')?.touched) {
+            <p class="text-[9px] text-danger font-bold uppercase tracking-tight">Identifier must be alphanumeric (A-Z, 0-9)</p>
+          } @else {
+            <p class="text-[9px] text-secondary/40">Unique alphanumeric code for system routing.</p>
+          }
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-[10px] font-bold text-secondary/60 uppercase tracking-widest block">Legal Entity Name</label>
+          <input 
+            type="text" 
+            formControlName="name"
+            placeholder="Official Corporate Name"
+            class="w-full bg-surface-light border border-secondary/20 px-4 py-3 text-sm text-surface-dark focus:border-primary focus:outline-none transition-all"
+            [class.border-danger]="registrationForm.get('tenant.name')?.invalid && registrationForm.get('tenant.name')?.touched"
+            style="border-radius: 0;"
+          >
+          @if (registrationForm.get('tenant.name')?.invalid && registrationForm.get('tenant.name')?.touched) {
+            <p class="text-[9px] text-danger font-bold uppercase tracking-tight">Legal entity name is required</p>
+          }
+        </div>
+
+        <div class="md:col-span-2 space-y-2">
+          <label class="text-[10px] font-bold text-secondary/60 uppercase tracking-widest block">Workspace Display Name</label>
+          <input 
+            type="text" 
+            formControlName="displayName"
+            placeholder="How the tenant appears in the dashboard"
+            class="w-full bg-surface-light border border-secondary/20 px-4 py-3 text-sm text-surface-dark focus:border-primary focus:outline-none transition-all"
+            [class.border-danger]="registrationForm.get('tenant.displayName')?.invalid && registrationForm.get('tenant.displayName')?.touched"
+            style="border-radius: 0;"
+          >
+          @if (registrationForm.get('tenant.displayName')?.invalid && registrationForm.get('tenant.displayName')?.touched) {
+            <p class="text-[9px] text-danger font-bold uppercase tracking-tight">Display name is required for identification</p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Administrative Account -->
+    <div class="bg-white border border-secondary/10 shadow-sm" style="border-radius: 0;" formGroupName="admin">
+      <header class="p-6 border-b border-secondary/5 flex items-center justify-between">
+        <h2 class="text-xs font-bold text-surface-dark uppercase tracking-[0.2em]">02. Master Administrative Account</h2>
+        <span class="text-[9px] font-medium text-secondary/40">Initial Access Credentials</span>
+      </header>
+      
+      <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+        <div class="space-y-2">
+          <label class="text-[10px] font-bold text-secondary/60 uppercase tracking-widest block">First Name</label>
+          <input 
+            type="text" 
+            formControlName="firstName"
+            class="w-full bg-surface-light border border-secondary/20 px-4 py-3 text-sm text-surface-dark focus:border-primary focus:outline-none transition-all"
+            [class.border-danger]="registrationForm.get('admin.firstName')?.invalid && registrationForm.get('admin.firstName')?.touched"
+            style="border-radius: 0;"
+          >
+          @if (registrationForm.get('admin.firstName')?.invalid && registrationForm.get('admin.firstName')?.touched) {
+            <p class="text-[9px] text-danger font-bold uppercase tracking-tight">First name is required</p>
+          }
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-[10px] font-bold text-secondary/60 uppercase tracking-widest block">Last Name</label>
+          <input 
+            type="text" 
+            formControlName="lastName"
+            class="w-full bg-surface-light border border-secondary/20 px-4 py-3 text-sm text-surface-dark focus:border-primary focus:outline-none transition-all"
+            [class.border-danger]="registrationForm.get('admin.lastName')?.invalid && registrationForm.get('admin.lastName')?.touched"
+            style="border-radius: 0;"
+          >
+          @if (registrationForm.get('admin.lastName')?.invalid && registrationForm.get('admin.lastName')?.touched) {
+            <p class="text-[9px] text-danger font-bold uppercase tracking-tight">Last name is required</p>
+          }
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-[10px] font-bold text-secondary/60 uppercase tracking-widest block">Administrative Email</label>
+          <input 
+            type="email" 
+            formControlName="email"
+            placeholder="admin@tenant.com"
+            class="w-full bg-surface-light border border-secondary/20 px-4 py-3 text-sm text-surface-dark focus:border-primary focus:outline-none transition-all"
+            [class.border-danger]="registrationForm.get('admin.email')?.invalid && registrationForm.get('admin.email')?.touched"
+            style="border-radius: 0;"
+          >
+          @if (registrationForm.get('admin.email')?.invalid && registrationForm.get('admin.email')?.touched) {
+            <p class="text-[9px] text-danger font-bold uppercase tracking-tight">Valid administrative email is required</p>
+          }
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-[10px] font-bold text-secondary/60 uppercase tracking-widest block">Security Key (Password)</label>
+          <input 
+            type="password" 
+            formControlName="password"
+            placeholder="Min 8 characters"
+            class="w-full bg-surface-light border border-secondary/20 px-4 py-3 text-sm text-surface-dark focus:border-primary focus:outline-none transition-all"
+            [class.border-danger]="registrationForm.get('admin.password')?.invalid && registrationForm.get('admin.password')?.touched"
+            style="border-radius: 0;"
+          >
+          @if (registrationForm.get('admin.password')?.invalid && registrationForm.get('admin.password')?.touched) {
+            <p class="text-[9px] text-danger font-bold uppercase tracking-tight">Security key must be at least 8 characters</p>
+          }
+        </div>
+
+        <div class="md:col-span-2 space-y-2">
+          <label class="text-[10px] font-bold text-secondary/60 uppercase tracking-widest block">Contact Number (Optional)</label>
+          <input 
+            type="tel" 
+            formControlName="phoneNumber"
+            placeholder="+1 (555) 000-0000"
+            class="w-full bg-surface-light border border-secondary/20 px-4 py-3 text-sm text-surface-dark focus:border-primary focus:outline-none transition-all"
+            style="border-radius: 0;"
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-between gap-6 pt-6">
+      <button 
+        type="button" 
+        (click)="goBack()"
+        class="px-8 py-4 text-[10px] font-bold text-secondary uppercase tracking-[0.2em] border border-secondary/20 hover:bg-surface-light transition-all"
+        style="border-radius: 0;"
+      >
+        Cancel Process
+      </button>
+
+      <button 
+        type="submit" 
+        [disabled]="isLoading() || registrationForm.invalid"
+        class="flex-1 max-w-[320px] py-4 bg-primary text-white text-[10px] font-bold uppercase tracking-[0.2em] shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+        style="border-radius: 0;"
+      >
+        @if (isLoading()) {
+          <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Initializing Node...
+        } @else {
+          Authorize & Deploy Tenant
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        }
+      </button>
+    </div>
+  </form>
+
+  <footer class="mt-16 pt-8 border-t border-secondary/5 flex justify-between items-center text-[9px] font-bold text-secondary/30 uppercase tracking-[0.3em]">
+    <span>Provisioning Protocol v4.2.0</span>
+    <span>Security Level: Enterprise High</span>
+  </footer>
+</div>

@@ -1,0 +1,155 @@
+<div class="p-8 max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+  @if (isSystemAdmin()) {
+  <!-- Admin Dashboard Header -->
+  <div class="flex justify-between items-center mb-8 border-b border-secondary/10 pb-6">
+    <div>
+      <h1 class="text-2xl font-semibold text-gray-900">Dashboard</h1>
+      <p class="text-gray-600 text-sm">System overview and real-time operational metrics.</p>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+  <div class="flex flex-col items-center justify-center h-[50vh] gap-4">
+    <div class="animate-spin h-6 w-6 border-2 border-primary border-t-transparent"></div>
+    <p class="text-xs font-bold uppercase tracking-wider text-gray-400">Synchronizing Metrics...</p>
+  </div>
+  } @else {
+  <!-- Admin Stats Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    @for (card of statsCards(); track card.label) {
+    <div
+      class="bg-white border border-secondary/10 p-8 hover:border-primary/30 transition-all duration-300 group shadow-sm">
+      <span
+        class="text-xs font-bold uppercase tracking-wider text-gray-500 block mb-3 group-hover:text-primary transition-colors">
+        {{ card.label }}
+      </span>
+      <div class="flex items-baseline gap-2">
+        <div class="text-4xl font-light text-gray-900 tracking-tighter">
+          {{ card.value }}
+        </div>
+        @if (card.label === 'Total DB Storage') {
+        <span class="text-xs text-gray-400 font-bold uppercase tracking-widest">USED</span>
+        }
+      </div>
+    </div>
+    }
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Admin Job Metrics -->
+    <div class="lg:col-span-1 bg-white border border-secondary/10 p-8 shadow-sm">
+      <div class="flex items-center justify-between mb-10">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-900">Job Distribution</h3>
+        <span
+          class="text-[10px] px-2 py-0.5 bg-gray-100 text-gray-600 font-bold tracking-widest uppercase border border-gray-200">Live</span>
+      </div>
+
+      <div class="space-y-8">
+        @for (metric of jobMetrics(); track metric.label) {
+        <div class="space-y-3">
+          <div class="flex justify-between items-end">
+            <div class="space-y-1">
+              <span class="text-xs font-bold uppercase tracking-wider text-gray-500 block">{{ metric.label }}</span>
+              <span class="text-xl font-medium text-gray-900">{{ metric.value }}</span>
+            </div>
+            <span class="text-xs font-mono font-bold text-gray-400">
+              {{ (adminStats()?.totalJobs || 0) > 0 ? ((metric.value / adminStats()!.totalJobs) * 100 | number:'1.0-0')
+              : 0 }}%
+            </span>
+          </div>
+          <div class="h-1 bg-gray-100 overflow-hidden">
+            <div class="h-full transition-all duration-1000 ease-out" [class.bg-primary]="metric.color === 'primary'"
+              [class.bg-success]="metric.color === 'success'" [class.bg-warning]="metric.color === 'warning'"
+              [class.bg-danger]="metric.color === 'danger'"
+              [style.width.%]="(adminStats()?.totalJobs || 0) > 0 ? (metric.value / adminStats()!.totalJobs) * 100 : 0">
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Admin Recent Jobs Table -->
+    <div class="lg:col-span-2 bg-white border border-secondary/10 overflow-hidden shadow-sm">
+      <div class="p-6 border-b border-secondary/5 flex justify-between items-center bg-gray-50/50">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-900">Recent Activity</h3>
+        <a routerLink="/sys/job-records"
+          class="text-xs font-bold uppercase tracking-wider text-primary hover:text-primary-dark transition-colors cursor-pointer">View
+          History</a>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-gray-50 border-b border-secondary/10">
+              <th class="py-3.5 px-8 text-xs font-bold text-gray-500 uppercase tracking-wider">Tenant</th>
+              <th class="py-3.5 px-8 text-xs font-bold text-gray-500 uppercase tracking-wider">Execution</th>
+              <th class="py-3.5 px-8 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="py-3.5 px-8 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-secondary/5">
+            @for (job of recentJobs(); track job.jobId) {
+            <tr class="hover:bg-gray-50/80 transition-colors group">
+              <td class="px-8 py-5">
+                <div class="flex flex-col">
+                  <span class="text-sm font-medium text-gray-900 group-hover:text-primary transition-colors">{{
+                    job.tenantName }}</span>
+                  <span class="text-xs text-gray-500 uppercase font-mono">{{ job.tenantCode }}</span>
+                </div>
+              </td>
+              <td class="px-8 py-5">
+                <span class="text-sm text-gray-700 font-medium tracking-tight">{{ job.jobType }}</span>
+              </td>
+              <td class="px-8 py-5">
+                <span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide border"
+                  [class.border-success/30]="job.status === 'COMPLETED'"
+                  [class.text-success]="job.status === 'COMPLETED'" [class.bg-success/5]="job.status === 'COMPLETED'"
+                  [class.border-primary/30]="job.status === 'RUNNING'" [class.text-primary]="job.status === 'RUNNING'"
+                  [class.bg-primary/5]="job.status === 'RUNNING'" [class.border-warning/30]="job.status === 'PENDING'"
+                  [class.text-warning]="job.status === 'PENDING'" [class.bg-warning/5]="job.status === 'PENDING'"
+                  [class.border-danger/30]="job.status === 'FAILED'" [class.text-danger]="job.status === 'FAILED'"
+                  [class.bg-danger/5]="job.status === 'FAILED'" style="border-radius: 0;">
+                  {{ job.status }}
+                </span>
+              </td>
+              <td class="px-8 py-5 text-right">
+                <span class="text-sm text-gray-600 font-medium italic">{{ job.createdAt | date:'MMM d, HH:mm' }}</span>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="4" class="px-8 py-20 text-center">
+                <p class="text-xs font-medium text-gray-400 uppercase tracking-widest">No recent activity detected</p>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  }
+  } @else {
+  <!-- Fallback Tenant Dashboard (Placeholder) -->
+  <div class="flex justify-between items-center mb-8 border-b border-secondary/10 pb-6">
+    <div>
+      <h1 class="text-2xl font-semibold text-gray-900">Dashboard</h1>
+      <p class="text-gray-600 text-sm">Welcome back to your compliance portal.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    @for (card of tenantStats(); track card.label) {
+    <div class="bg-white border border-secondary/10 p-8 shadow-sm">
+      <span class="text-xs font-bold uppercase tracking-wider text-gray-500 block mb-2">{{ card.label }}</span>
+      <div class="text-4xl font-light text-gray-900 tracking-tighter">{{ card.value }}</div>
+    </div>
+    }
+  </div>
+
+  <div class="h-[40vh] border border-dashed border-secondary/20 flex items-center justify-center bg-gray-50/30">
+    <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Metric visualization modules under maintenance
+    </p>
+  </div>
+  }
+</div>

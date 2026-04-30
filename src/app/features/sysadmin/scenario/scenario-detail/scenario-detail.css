@@ -1,0 +1,70 @@
+.markdown-content :host ::ng-deep {
+  p {
+    margin-bottom: 0.5rem;
+  }
+  
+  ul, ol {
+    margin-left: 1.25rem;
+    margin-bottom: 0.75rem;
+    list-style-type: disc;
+  }
+  
+  li {
+    margin-bottom: 0.25rem;
+  }
+  
+  strong {
+    font-weight: 600;
+    color: var(--surface-dark);
+  }
+  
+  code {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 0.1rem 0.3rem;
+    font-family: monospace;
+    font-size: 0.9em;
+  }
+  
+  pre {
+    background-color: #f1f5f9;
+    padding: 1rem;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    border-left: 2px solid #2563eb;
+  }
+  
+  blockquote {
+    border-left: 3px solid #cbd5e1;
+    padding-left: 1rem;
+    color: #64748b;
+    font-style: italic;
+    margin-bottom: 1rem;
+  }
+
+  h1, h2, h3, h4 {
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: #0f172a;
+  }
+
+  h1 { font-size: 1.25rem; }
+  h2 { font-size: 1.125rem; }
+  h3 { font-size: 1rem; }
+}
+
+/* Tooltip specific markdown styling */
+.group\/info .markdown-content :host ::ng-deep {
+    p { margin-bottom: 0.25rem; }
+    ul, ol { margin-bottom: 0.5rem; color: #cbd5e1; }
+    strong { color: white; }
+    pre { background-color: rgba(255, 255, 255, 0.1); color: #e2e8f0; }
+}
+
+/* Global layout blur when drawer is open */
+::ng-deep body.drawer-open app-navbar,
+::ng-deep body.drawer-open app-sidebar {
+  filter: blur(8px);
+  pointer-events: none;
+  transition: filter 0.3s ease;
+}

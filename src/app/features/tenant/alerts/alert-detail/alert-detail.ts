@@ -1,0 +1,139 @@
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { AlertService } from '../../../../core/services/alert.service';
+import { AlertDetail, AlertStatus } from '../../../../models/alert.model';
+
+@Component({
+  selector: 'app-alert-detail',
+  standalone: true,
+  imports: [CommonModule, RouterModule, FormsModule],
+  templateUrl: './alert-detail.html',
+  styleUrl: './alert-detail.css',
+})
+export class AlertDetailComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private alertService = inject(AlertService);
+
+  alertId = signal<string | null>(null);
+  alertDetail = signal<AlertDetail | null>(null);
+  isLoading = signal<boolean>(false);
+  
+  // Investigation Form
+  newStatus = signal<AlertStatus>('OPEN');
+  reason = signal<string>('');
+  isUpdating = signal<boolean>(false);
+
+  statuses = [
+    { label: 'Open', value: 'OPEN' },
+    { label: 'Under Review', value: 'UNDER_REVIEW' },
+    { label: 'Escalated', value: 'ESCALATED' },
+    { label: 'Closed True Positive', value: 'CLOSED_TRUE_POSITIVE' },
+    { label: 'Closed False Positive', value: 'CLOSED_FALSE_POSITIVE' },
+    { label: 'Closed Inconclusive', value: 'CLOSED_INCONCLUSIVE' }
+  ];
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('alertId');
+    if (id) {
+      this.alertId.set(id);
+      this.loadAlertDetail(id);
+    }
+  }
+
+  loadAlertDetail(id: string): void {
+    this.isLoading.set(true);
+    this.alertService.getAlertDetail(id).subscribe({
+      next: (response) => {
+        if (response.data) {
+          this.alertDetail.set(response.data);
+          this.newStatus.set(response.data.alert.alertStatus);
+        }
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+        this.setMockDetail(id);
+      }
+    });
+  }
+
+  setMockDetail(id: string): void {
+    const mock: AlertDetail = {
+      alert: {
+        alertCode: id,
+        scenarioName: 'Large Cash Deposit',
+        customerName: 'Aman Sharma',
+        customerCode: 'CUST-8829',
+        alertStatus: 'OPEN',
+        createdAt: new Date().toISOString()
+      },
+      financialTransactionResponsesList: [
+        {
+          txnNo: 'TXN-901',
+          accountNo: 'ACC-123',
+          amount: 5000,
+          txnType: 'CASH',
+          direction: 'INBOUND',
+          counterpartyAccountNo: 'N/A',
+          counterpartyBankIfsc: 'N/A',
+          txnTimestamp: new Date().toISOString(),
+          countryCode: 'IN'
+        },
+        {
+          txnNo: 'TXN-902',
+          accountNo: 'ACC-123',
+          amount: 7500,
+          txnType: 'CASH',
+          direction: 'INBOUND',
+          counterpartyAccountNo: 'N/A',
+          counterpartyBankIfsc: 'N/A',
+          txnTimestamp: new Date().toISOString(),
+          countryCode: 'IN'
+        }
+      ],
+      customerResponsesList: [
+        {
+          customerCode: 'CUST-8829',
+          customerName: 'Aman Sharma',
+          customerEmail: 'aman@example.com',
+          customerPhone: '9876543210'
+        }
+      ]
+    };
+    this.alertDetail.set(mock);
+    this.newStatus.set(mock.alert.alertStatus);
+  }
+
+  updateStatus(): void {
+    if (!this.alertId()) return;
+    
+    this.isUpdating.set(true);
+    this.alertService.updateAlertStatus(this.alertId()!, this.newStatus(), this.reason()).subscribe({
+      next: (response) => {
+        if (response.data) {
+          this.loadAlertDetail(this.alertId()!);
+          this.reason.set('');
+        }
+        this.isUpdating.set(false);
+      },
+      error: () => {
+        this.isUpdating.set(false);
+        // Mock update
+        if (this.alertDetail()) {
+          const updated = { ...this.alertDetail()! };
+          updated.alert.alertStatus = this.newStatus();
+          this.alertDetail.set(updated);
+          this.reason.set('');
+        }
+      }
+    });
+  }
+
+  goBack(): void {
+    const tenant = this.router.url.split('/')[1];
+    this.router.navigate([`/${tenant}/alerts`]);
+  }
+}

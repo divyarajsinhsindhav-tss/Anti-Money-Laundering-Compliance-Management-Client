@@ -1,0 +1,462 @@
+<div class="p-8 max-w-[1400px] mx-auto">
+  <!-- Header & Primary Actions -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-6">
+    <div class="flex items-center gap-4">
+      <button (click)="goBack()"
+        class="p-2 hover:bg-surface-light text-secondary transition-colors border border-secondary/10"
+        style="border-radius: 0;">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+      </button>
+      <div>
+        <div class="flex items-center gap-3">
+          <h1 class="text-2xl font-semibold text-surface-dark">{{ tenantDetail()?.tenant?.name || 'Loading...' }}</h1>
+        </div>
+        <p class="text-secondary text-sm font-mono">{{ tenantDetail()?.tenant?.tenantCode }} | {{
+          tenantDetail()?.tenant?.schemaName }}</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button (click)="loadTenantDetail(tenantDetail()?.tenant?.tenantCode || '')"
+        class="px-4 py-2 text-xs font-bold uppercase tracking-widest text-secondary border border-secondary/20 hover:bg-surface-light transition-colors"
+        style="border-radius: 0;">
+        Refresh Data
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content Tabs -->
+  <div class="flex gap-8 border-b border-secondary/10 mb-8">
+    <button (click)="activeTab.set('overview')" class="pb-4 px-2 text-sm font-medium transition-all relative"
+      [class.text-primary]="activeTab() === 'overview'" [class.text-secondary]="activeTab() !== 'overview'">
+      Overview
+      @if (activeTab() === 'overview') {
+      <div class="absolute bottom-0 left-0 w-full h-0.5 bg-primary"></div>
+      }
+    </button>
+    <button (click)="activeTab.set('scenarios')" class="pb-4 px-2 text-sm font-medium transition-all relative"
+      [class.text-primary]="activeTab() === 'scenarios'" [class.text-secondary]="activeTab() !== 'scenarios'">
+      Scenarios
+      <span class="ml-2 px-1.5 py-0.5 text-[10px] bg-secondary/10 text-secondary">{{
+        tenantDetail()?.subscribedScenarios?.length || 0 }}</span>
+      @if (activeTab() === 'scenarios') {
+      <div class="absolute bottom-0 left-0 w-full h-0.5 bg-primary"></div>
+      }
+    </button>
+    <button (click)="activeTab.set('jobs')" class="pb-4 px-2 text-sm font-medium transition-all relative"
+      [class.text-primary]="activeTab() === 'jobs'" [class.text-secondary]="activeTab() !== 'jobs'">
+      Job History
+      @if (activeTab() === 'jobs') {
+      <div class="absolute bottom-0 left-0 w-full h-0.5 bg-primary"></div>
+      }
+    </button>
+  </div>
+
+  @if (isLoading()) {
+  <div class="space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      @for (i of [1, 2, 3]; track i) {
+      <div class="h-32 bg-surface-light/30 animate-pulse border border-secondary/10"></div>
+      }
+    </div>
+    <div class="h-64 bg-surface-light/30 animate-pulse border border-secondary/10"></div>
+  </div>
+  } @else if (error()) {
+  <div class="border border-danger/20 bg-danger/5 p-8 text-center" style="border-radius: 0;">
+    <p class="text-danger font-medium mb-4">{{ error() }}</p>
+    <button (click)="goBack()" class="text-secondary text-sm underline">Return to list</button>
+  </div>
+  } @else if (tenantDetail()) {
+  <!-- Tab Content -->
+  @switch (activeTab()) {
+  <!-- Overview Tab: Premium Grid Layout -->
+  @case ('overview') {
+  <div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <!-- Top Level High-Fidelity Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div
+        class="p-6 bg-white border border-secondary/10 shadow-sm relative overflow-hidden group hover:border-primary/30 transition-colors"
+        style="border-radius: 0;">
+        <span class="text-[9px] font-bold text-secondary uppercase tracking-[0.2em] mb-4 block">Active Scenarios</span>
+        <div class="flex items-end gap-2">
+          <span class="text-3xl font-light text-surface-dark leading-none">{{
+            tenantDetail()?.subscribedScenarios?.length || 0 }}</span>
+          <span class="text-[10px] font-bold text-success uppercase tracking-tighter mb-1">Operational</span>
+        </div>
+      </div>
+
+      <div
+        class="p-6 bg-white border border-secondary/10 shadow-sm relative overflow-hidden group hover:border-primary/30 transition-colors"
+        style="border-radius: 0;">
+        <span class="text-[9px] font-bold text-secondary uppercase tracking-[0.2em] mb-4 block">Process Execution</span>
+        <div class="flex items-end gap-2">
+          <span class="text-3xl font-light text-surface-dark leading-none">{{ jobStats().total }}</span>
+          <span class="text-[10px] font-bold text-secondary/40 uppercase tracking-tighter mb-1">Lifetime</span>
+        </div>
+      </div>
+
+      <div
+        class="p-6 bg-white border border-secondary/10 shadow-sm relative overflow-hidden group hover:border-primary/30 transition-colors"
+        style="border-radius: 0;">
+        <span class="text-[9px] font-bold text-secondary uppercase tracking-[0.2em] mb-4 block">Efficiency Score</span>
+        <div class="flex items-end gap-2">
+          <span class="text-3xl font-light text-surface-dark leading-none">{{ jobStats().total > 0 ?
+            (jobStats().completed / jobStats().total * 100 | number:'1.0-0') : '0' }}%</span>
+          <span class="text-[10px] font-bold text-primary uppercase tracking-tighter mb-1">Optimal</span>
+        </div>
+      </div>
+
+      <div
+        class="p-6 bg-white border border-secondary/10 shadow-sm relative overflow-hidden group hover:border-primary/30 transition-colors"
+        style="border-radius: 0;">
+        <span class="text-[9px] font-bold text-secondary uppercase tracking-[0.2em] mb-4 block">Schema Storage</span>
+        <div class="flex items-end gap-2">
+          <span class="text-3xl font-light text-surface-dark leading-none">{{
+            tenantDetail()?.storageMetrics?.totalSchemaSize || '142.7 MB' }}</span>
+          <span class="text-[10px] font-bold text-secondary/40 uppercase tracking-tighter mb-1">Allocated</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Operational Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Environment Details (Large) -->
+      <div class="lg:col-span-2 bg-white border border-secondary/10 shadow-sm flex flex-col" style="border-radius: 0;">
+        <header class="p-6 border-b border-secondary/5 flex justify-between items-center">
+          <h3 class="text-xs font-bold text-surface-dark uppercase tracking-widest">Environment Configuration</h3>
+          <span class="px-2 py-1 bg-primary/5 text-primary text-[8px] font-bold uppercase tracking-widest">Read
+            Only</span>
+        </header>
+
+        <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10 flex-1">
+          <div class="space-y-1">
+            <label class="text-[9px] font-bold text-secondary/40 uppercase tracking-[0.3em]">Identity Label</label>
+            <p class="text-base font-medium text-surface-dark tracking-tight">{{ tenantDetail()?.tenant?.displayName }}
+            </p>
+          </div>
+          <div class="space-y-1">
+            <label class="text-[9px] font-bold text-secondary/40 uppercase tracking-[0.3em]">Schema Namespace</label>
+            <p class="text-base font-mono text-surface-dark tracking-tight">{{ tenantDetail()?.tenant?.schemaName }}</p>
+          </div>
+
+          <div class="md:col-span-2 pt-6 border-t border-secondary/5 grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-8">
+            <div class="space-y-3">
+              <label class="text-[9px] font-bold text-secondary/40 uppercase tracking-[0.3em]">Customer Data
+                Volume</label>
+              <div class="flex items-center justify-between p-3 bg-surface-light/50 border border-secondary/5">
+                <span class="text-sm font-medium text-surface-dark">{{ tenantDetail()?.storageMetrics?.customerTableSize
+                  || '14.2 MB' }}</span>
+                <span class="text-[8px] font-bold text-secondary/30 uppercase tracking-widest">PostgreSQL</span>
+              </div>
+            </div>
+            <div class="space-y-3">
+              <label class="text-[9px] font-bold text-secondary/40 uppercase tracking-[0.3em]">Transaction Data
+                Volume</label>
+              <div class="flex items-center justify-between p-3 bg-surface-light/50 border border-secondary/5">
+                <span class="text-sm font-medium text-surface-dark">{{
+                  tenantDetail()?.storageMetrics?.transactionTableSize || '128.5 MB' }}</span>
+                <span class="text-[8px] font-bold text-secondary/30 uppercase tracking-widest">PostgreSQL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="p-4 bg-surface-light/30 border-t border-secondary/5 text-center">
+          <p class="text-[8px] font-bold text-secondary/30 uppercase tracking-[0.4em]">Environmental Data Last Verified:
+            {{ today | date:'mediumDate' }}</p>
+        </footer>
+      </div>
+
+      <!-- Performance Summary (Sidebar) -->
+      <div class="bg-white border border-secondary/10 shadow-sm" style="border-radius: 0;">
+        <header class="p-6 border-b border-secondary/5">
+          <h3 class="text-xs font-bold text-surface-dark uppercase tracking-widest">Execution Health</h3>
+        </header>
+
+        <div class="p-8 space-y-8">
+          <div class="space-y-4">
+            <div class="flex justify-between items-end">
+              <span class="text-[9px] font-bold text-secondary/50 uppercase tracking-widest">Current Success Rate</span>
+              <span class="text-2xl font-light text-surface-dark leading-none">
+                {{ jobStats().total > 0 ? (jobStats().completed / jobStats().total * 100 | number:'1.0-1') : '0' }}%
+              </span>
+            </div>
+            <div class="w-full h-1 bg-surface-light" style="border-radius: 0;">
+              <div class="h-full bg-success transition-all duration-1000 shadow-[0_0_8px_rgba(22,163,74,0.3)]"
+                [style.width.%]="jobStats().total > 0 ? (jobStats().completed / jobStats().total * 100) : 0"></div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-4 pt-4 border-t border-secondary/5">
+            <div class="flex justify-between items-center p-3 bg-success/5 border-l-2 border-success">
+              <span class="text-[10px] font-bold text-success uppercase tracking-widest">Success</span>
+              <span class="text-sm font-medium text-surface-dark">{{ jobStats().completed }}</span>
+            </div>
+            <div class="flex justify-between items-center p-3 bg-danger/5 border-l-2 border-danger">
+              <span class="text-[10px] font-bold text-danger uppercase tracking-widest">Failed</span>
+              <span class="text-sm font-medium text-surface-dark">{{ jobStats().failed }}</span>
+            </div>
+            <div class="flex justify-between items-center p-3 bg-primary/5 border-l-2 border-primary">
+              <span class="text-[10px] font-bold text-primary uppercase tracking-widest">Running</span>
+              <span class="text-sm font-medium text-surface-dark">{{ jobStats().pending }}</span>
+            </div>
+          </div>
+
+          <p class="text-[9px] leading-relaxed text-secondary/60 italic text-center pt-4">
+            Real-time telemetry from cluster node aws-eu-prod-04
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  @case ('scenarios') {
+  <div class="animate-in fade-in slide-in-from-bottom-2 duration-500 space-y-4">
+    <div class="flex justify-between items-center">
+      <div class="flex flex-col">
+        <h3 class="text-xs font-bold text-surface-dark uppercase tracking-widest">Environment Scenarios</h3>
+        <p class="text-[10px] text-secondary/60 mt-1">Managed detection packages active for this institution.</p>
+      </div>
+      @if ((tenantDetail()?.subscribedScenarios?.length || 0) > 0) {
+      <button 
+        (click)="openAssignModal()"
+        class="bg-primary text-white px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-primary-dark transition-all"
+        style="border-radius: 0;">
+        Assign Scenario
+      </button>
+      }
+    </div>
+
+    <div class="bg-white border border-secondary/10">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-surface-light/50 border-b border-secondary/10">
+            <th class="py-4 px-6 text-[10px] font-bold text-secondary uppercase tracking-[0.2em]">Scenario Information
+            </th>
+            <th class="py-4 px-6 text-[10px] font-bold text-secondary uppercase tracking-[0.2em]">Code Identifier</th>
+            <th class="py-4 px-6 text-[10px] font-bold text-secondary uppercase tracking-[0.2em] text-right">Operational
+              Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-secondary/5">
+          @for (scenario of tenantDetail()?.subscribedScenarios; track scenario.scenarioId) {
+          <tr class="hover:bg-surface-light/20 transition-colors">
+            <td class="py-4 px-6">
+              <div class="flex flex-col">
+                <span class="text-sm font-medium text-surface-dark">{{ scenario.scenarioName }}</span>
+                <span class="text-xs text-secondary/60 font-light">{{ scenario.description || 'No description provided'
+                  }}</span>
+              </div>
+            </td>
+            <td class="py-4 px-6">
+              <span class="text-xs font-mono text-secondary bg-secondary/5 px-2 py-1">{{ scenario.scenarioCode }}</span>
+            </td>
+            <td class="py-4 px-6 text-right">
+              <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border"
+                [class.border-success/30]="scenario.status === 'ACTIVE'"
+                [class.text-success]="scenario.status === 'ACTIVE'" [class.bg-success/5]="scenario.status === 'ACTIVE'"
+                [class.border-secondary/30]="scenario.status !== 'ACTIVE'"
+                [class.text-secondary]="scenario.status !== 'ACTIVE'" style="border-radius: 0;">
+                {{ scenario.status }}
+              </span>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="3" class="py-24 text-center">
+              <div class="text-secondary/20 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <p class="text-sm text-secondary/40 font-medium uppercase tracking-widest">No scenarios active for this environment.</p>
+              <button 
+                (click)="openAssignModal()"
+                class="mt-6 bg-primary text-white px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-primary-dark transition-all"
+                style="border-radius: 0;">
+                Subscribe to Scenarios
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Assignment Modal -->
+  @if (isAssignModalOpen()) {
+  <div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div 
+      (click)="closeAssignModal()"
+      class="absolute inset-0 bg-surface-dark/40 backdrop-blur-sm animate-in fade-in duration-300">
+    </div>
+    
+    <div class="bg-white w-full max-w-2xl border border-secondary/10 shadow-2xl relative z-10 animate-in zoom-in-95 duration-300" style="border-radius: 0;">
+      <header class="p-6 border-b border-secondary/5 flex justify-between items-center bg-surface-light/30">
+        <div>
+          <h3 class="text-sm font-bold text-surface-dark uppercase tracking-widest">Available Detection Packages</h3>
+          <p class="text-[10px] text-secondary/60 mt-1">Select a scenario to deploy to this institutional node.</p>
+        </div>
+        <button (click)="closeAssignModal()" class="text-secondary/40 hover:text-surface-dark transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </header>
+
+      <div class="p-6 max-h-[400px] overflow-y-auto custom-scrollbar">
+        <div class="grid grid-cols-1 gap-4">
+          @for (scenario of availableScenarios(); track scenario.scenarioCode) {
+          <div 
+            (click)="assignScenario(scenario.scenarioCode)"
+            class="group p-4 border border-secondary/5 hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer flex justify-between items-center"
+          >
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-semibold text-surface-dark group-hover:text-primary transition-colors">{{ scenario.scenarioName }}</span>
+                <span class="text-[9px] font-mono text-secondary/40 uppercase tracking-tighter bg-secondary/5 px-1.5 py-0.5">{{ scenario.scenarioCode }}</span>
+              </div>
+              <p class="text-xs text-secondary/60 line-clamp-1">{{ scenario.description || 'Standard institutional risk detection architecture.' }}</p>
+            </div>
+            <div class="ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
+              <span class="text-[9px] font-bold text-primary uppercase tracking-widest">Deploy Package</span>
+            </div>
+          </div>
+          } @empty {
+          <div class="py-12 text-center">
+            <p class="text-xs text-secondary/40 italic">All available scenarios are already subscribed.</p>
+          </div>
+          }
+        </div>
+      </div>
+
+      <footer class="p-6 border-t border-secondary/5 bg-surface-light/30 text-right">
+        <button 
+          (click)="closeAssignModal()"
+          class="px-6 py-2 text-[10px] font-bold uppercase tracking-widest text-secondary hover:text-surface-dark transition-colors">
+          Cancel
+        </button>
+      </footer>
+
+      <!-- Loading Overlay within Modal -->
+      @if (isAssigning()) {
+      <div class="absolute inset-0 bg-white/80 backdrop-blur-[2px] flex items-center justify-center z-20">
+        <div class="flex flex-col items-center">
+          <div class="w-8 h-8 border-2 border-primary/20 border-t-primary animate-spin mb-4"></div>
+          <p class="text-[10px] font-bold text-primary uppercase tracking-widest">Deploying Architecture...</p>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  }
+  }
+
+  @case ('jobs') {
+  <div class="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+    <!-- Filter Bar -->
+    <div class="flex items-center justify-between gap-4">
+      <div class="relative flex-1 max-w-md">
+        <input type="text" placeholder="Filter by type, status or ID..."
+          (input)="jobSearchQuery.set($any($event.target).value)"
+          class="w-full px-10 py-2 text-sm bg-white border border-secondary/10 focus:border-primary/30 focus:outline-none transition-all"
+          style="border-radius: 0;">
+        <svg xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-secondary/40" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+      <div class="text-[10px] font-bold text-secondary/40 uppercase tracking-widest">
+        Showing {{ filteredJobHistory().length }} records
+      </div>
+    </div>
+
+    <div class="bg-white border border-secondary/10 overflow-hidden flex flex-col max-h-[480px]">
+      <div class="overflow-y-auto custom-scrollbar">
+        <table class="w-full text-left border-collapse">
+          <thead class="sticky top-0 z-10 bg-surface-light shadow-[0_1px_0_rgba(0,0,0,0.05)]">
+            <tr class="border-b border-secondary/10">
+              <th class="py-4 px-6 text-[10px] font-bold text-secondary uppercase tracking-[0.2em]">Job Type</th>
+              <th class="py-4 px-6 text-[10px] font-bold text-secondary uppercase tracking-[0.2em]">Start Time</th>
+              <th class="py-4 px-6 text-[10px] font-bold text-secondary uppercase tracking-[0.2em]">Completed At</th>
+              <th class="py-4 px-6 text-[10px] font-bold text-secondary uppercase tracking-[0.2em] text-right">Status
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-secondary/5">
+            @for (job of filteredJobHistory(); track job.jobId) {
+            <tr class="hover:bg-surface-light/20 transition-colors">
+              <td class="py-4 px-6">
+                <div class="flex items-center gap-3">
+                  <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center transition-colors duration-500"
+                    [class.bg-success/10]="job.status === 'SUCCESS' || job.status === 'COMPLETED'"
+                    [class.bg-danger/10]="job.status === 'FAILED' || job.status === 'FAILURE'"
+                    [class.bg-primary/10]="job.status === 'PENDING' || job.status === 'RUNNING'"
+                    style="border-radius: 0;">
+                    @if (job.status === 'SUCCESS' || job.status === 'COMPLETED') {
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                    </svg>
+                    } @else if (job.status === 'FAILED' || job.status === 'FAILURE') {
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-danger" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    } @else {
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary animate-spin" fill="none"
+                      viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    }
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="text-sm font-medium text-surface-dark">{{ job.jobType }}</span>
+                    <span class="text-[9px] font-mono text-secondary/50 uppercase tracking-widest">Id: {{ job.jobId
+                      }}</span>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-6 text-sm text-secondary">
+                {{ job.startedAt | date:'medium' }}
+              </td>
+              <td class="py-4 px-6 text-sm text-secondary">
+                {{ job.completedAt | date:'medium' }}
+              </td>
+              <td class="py-4 px-6 text-right">
+                <span
+                  class="px-2 py-1 text-[9px] font-bold uppercase tracking-widest border transition-all duration-500"
+                  [class.border-success/30]="job.status === 'SUCCESS' || job.status === 'COMPLETED'"
+                  [class.text-success]="job.status === 'SUCCESS' || job.status === 'COMPLETED'"
+                  [class.bg-success/5]="job.status === 'SUCCESS' || job.status === 'COMPLETED'"
+                  [class.border-danger/30]="job.status === 'FAILED' || job.status === 'FAILURE'"
+                  [class.text-danger]="job.status === 'FAILED' || job.status === 'FAILURE'"
+                  [class.bg-danger/5]="job.status === 'FAILED' || job.status === 'FAILURE'"
+                  [class.border-primary/30]="job.status === 'PENDING' || job.status === 'RUNNING'"
+                  [class.text-primary]="job.status === 'PENDING' || job.status === 'RUNNING'"
+                  [class.bg-primary/5]="job.status === 'PENDING' || job.status === 'RUNNING'" style="border-radius: 0;">
+                  {{ job.status }}
+                </span>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="4" class="py-24 text-center">
+                <p class="text-secondary/40 font-light italic">No historical job records available for this cluster.</p>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  }
+  }
+  }
+</div>

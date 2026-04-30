@@ -1,0 +1,193 @@
+<div class="p-8 max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+  <!-- Page Header -->
+  <div class="flex justify-between items-center mb-8 border-b border-secondary/10 pb-6">
+    <div>
+      <h1 class="text-2xl font-semibold text-surface-dark">Alerts Management</h1>
+      <p class="text-secondary text-sm">Review and investigate potential AML suspicious activities.</p>
+    </div>
+  </div>
+
+  <!-- Filters & Toolbar -->
+  <div class="flex flex-col gap-6 mb-6">
+    <div class="flex flex-wrap gap-4">
+      <!-- Status Filter -->
+      <div class="w-full md:w-64">
+        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Filter by Status</label>
+        <div class="relative group">
+          <select 
+            [ngModel]="selectedStatus()" 
+            (ngModelChange)="onStatusChange($event)"
+            class="appearance-none w-full bg-white border border-secondary/20 focus:border-primary px-4 py-2 text-sm text-surface-dark outline-none transition-all cursor-pointer hover:bg-surface-light shadow-sm"
+            style="border-radius: 0;"
+          >
+            @for (status of statuses; track status.value) {
+              <option [value]="status.value">{{ status.label }}</option>
+            }
+          </select>
+          <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search by Alert ID -->
+      <div class="w-full md:w-80">
+        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Search by Alert ID</label>
+        <div class="relative group">
+          <input 
+            type="text" 
+            [ngModel]="searchQuery()" 
+            (ngModelChange)="onSearch($event)"
+            placeholder="e.g. ALT-006909"
+            class="w-full bg-white border border-secondary/20 focus:border-primary px-4 py-2 text-sm text-surface-dark outline-none transition-all hover:bg-surface-light shadow-sm pl-10"
+            style="border-radius: 0;"
+          >
+          <div class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Toolbar: Pagination & Page Size -->
+    <div class="flex justify-between items-center bg-gray-50 p-4 border border-secondary/10">
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-3 border-r border-secondary/10 pr-6">
+          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Show</span>
+          <div class="relative group">
+            <select 
+              [ngModel]="pageSize()" 
+              (ngModelChange)="onPageSizeChange($event)"
+              class="appearance-none bg-white border border-secondary/20 pl-3 pr-8 py-1.5 text-sm font-medium text-gray-800 outline-none focus:border-primary transition-all cursor-pointer hover:bg-white min-w-[70px]"
+              style="border-radius: 0;"
+            >
+              <option [value]="5">5</option>
+              <option [value]="10">10</option>
+              <option [value]="25">25</option>
+              <option [value]="50">50</option>
+            </select>
+            <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Entries</span>
+        </div>
+        <div class="text-xs text-gray-500 font-medium">
+          Showing {{ alerts().length }} of {{ totalElements() }} records
+        </div>
+      </div>
+
+      <!-- Pagination Controls -->
+      <div class="flex items-center gap-4">
+         <span class="text-xs font-bold text-gray-600 uppercase tracking-wider">
+           PAGE {{ currentPage() + 1 }} OF {{ totalPages() || 1 }}
+         </span>
+         <div class="flex gap-1">
+           <button 
+             (click)="prevPage()" 
+             [disabled]="currentPage() === 0 || isLoading()"
+             class="p-2 border border-secondary/20 hover:border-primary disabled:opacity-30 transition-all bg-white hover:bg-gray-100 group"
+             style="border-radius: 0;"
+           >
+             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 group-hover:text-primary"><path d="m15 18-6-6 6-6"/></svg>
+           </button>
+           <button 
+             (click)="nextPage()" 
+             [disabled]="currentPage() >= totalPages() - 1 || isLoading()"
+             class="p-2 border border-secondary/20 hover:border-primary disabled:opacity-30 transition-all bg-white hover:bg-gray-100 group"
+             style="border-radius: 0;"
+           >
+             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 group-hover:text-primary"><path d="m9 18 6-6-6-6"/></svg>
+           </button>
+         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerts Table -->
+  <div class="border border-secondary/10 bg-white">
+    <div class="overflow-x-auto max-h-[600px] overflow-y-auto custom-scrollbar relative">
+      <table class="w-full text-left border-collapse">
+        <thead class="sticky top-0 z-10 bg-gray-50 shadow-sm">
+          <tr class="border-b border-secondary/10">
+            <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Alert ID</th>
+            <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Customer</th>
+            <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Scenario</th>
+            <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Date</th>
+            <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-secondary/5">
+          @if (isLoading()) {
+            @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+              <tr class="animate-pulse">
+                <td colspan="6" class="py-5 px-6">
+                  <div class="h-4 bg-gray-100 w-full"></div>
+                </td>
+              </tr>
+            }
+          } @else {
+            @for (alert of alerts(); track alert.alertCode) {
+              <tr class="hover:bg-gray-50/80 transition-colors group">
+                <td class="py-4 px-6">
+                  <span class="text-xs text-gray-400 font-mono bg-gray-50 px-2 py-0.5">
+                    {{ alert.alertCode }}
+                  </span>
+                </td>
+                <td class="py-4 px-6">
+                  <div class="flex flex-col">
+                    <span class="text-sm font-medium text-surface-dark">{{ alert.customerName }}</span>
+                    <span class="text-xs text-secondary/60">{{ alert.customerCode }}</span>
+                  </div>
+                </td>
+                <td class="py-4 px-6">
+                  <div class="flex flex-col">
+                    <span class="text-sm text-gray-700 font-medium">{{ alert.scenarioName }}</span>
+                  </div>
+                </td>
+                <td class="py-4 px-6">
+                  <span 
+                    class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide border"
+                    [class.border-success/30]="alert.alertStatus.startsWith('CLOSED')"
+                    [class.text-success]="alert.alertStatus.startsWith('CLOSED')"
+                    [class.bg-success/5]="alert.alertStatus.startsWith('CLOSED')"
+                    [class.border-primary/30]="alert.alertStatus === 'UNDER_REVIEW'"
+                    [class.text-primary]="alert.alertStatus === 'UNDER_REVIEW'"
+                    [class.bg-primary/5]="alert.alertStatus === 'UNDER_REVIEW'"
+                    [class.border-warning/30]="alert.alertStatus === 'OPEN'"
+                    [class.text-warning]="alert.alertStatus === 'OPEN'"
+                    [class.bg-warning/5]="alert.alertStatus === 'OPEN'"
+                    [class.border-danger/30]="alert.alertStatus === 'ESCALATED'"
+                    [class.text-danger]="alert.alertStatus === 'ESCALATED'"
+                    [class.bg-danger/5]="alert.alertStatus === 'ESCALATED'"
+                    style="border-radius: 0;"
+                  >
+                    {{ alert.alertStatus.replace('_', ' ') }}
+                  </span>
+                </td>
+                <td class="py-4 px-6 text-right">
+                  <span class="text-sm text-secondary">{{ alert.createdAt | date:'MMM d, yyyy' }}</span>
+                </td>
+                <td class="py-4 px-6 text-right">
+                   <button 
+                    (click)="viewDetail(alert.alertCode)"
+                    class="text-primary hover:text-primary-dark text-xs font-bold uppercase tracking-wider transition-colors border-none bg-transparent cursor-pointer"
+                  >
+                    Investigate
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="py-12 text-center text-gray-400 italic text-sm">
+                  No alerts found.
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

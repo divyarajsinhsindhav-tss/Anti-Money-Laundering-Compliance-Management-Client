@@ -1,0 +1,125 @@
+<div class="p-8 max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+  <!-- Header -->
+  <div class="flex items-center gap-4 mb-8 border-b border-secondary/10 pb-6">
+    <button (click)="goBack()" class="p-2 hover:bg-gray-100 transition-colors" style="border-radius: 0;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <div>
+      <div class="flex items-center gap-3">
+        <h1 class="text-2xl font-semibold text-surface-dark">Case Details</h1>
+        <span class="text-xs text-gray-400 font-mono bg-gray-50 px-2 py-0.5 border border-secondary/10">
+          {{ caseId() }}
+        </span>
+      </div>
+      <p class="text-secondary text-sm">Review case summary and linked suspicious alerts.</p>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex flex-col gap-6">
+      <div class="h-48 bg-gray-100 animate-pulse"></div>
+      <div class="h-64 bg-gray-100 animate-pulse"></div>
+    </div>
+  } @else if (caseDetail()) {
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Left Column: Case Info -->
+      <div class="lg:col-span-1 space-y-6">
+        <div class="bg-white border border-secondary/10 p-6 shadow-sm">
+          <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 border-b border-secondary/5 pb-4">
+            Case Summary
+          </h2>
+          
+          <div class="space-y-6">
+            <div>
+              <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Status</label>
+              <span 
+                class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide border"
+                [class.border-success/30]="caseDetail()?.caseResponse?.status?.startsWith('CLOSED')"
+                [class.text-success]="caseDetail()?.caseResponse?.status?.startsWith('CLOSED')"
+                [class.bg-success/5]="caseDetail()?.caseResponse?.status?.startsWith('CLOSED')"
+                [class.border-primary/30]="caseDetail()?.caseResponse?.status === 'UNDER_REVIEW'"
+                [class.text-primary]="caseDetail()?.caseResponse?.status === 'UNDER_REVIEW'"
+                [class.bg-primary/5]="caseDetail()?.caseResponse?.status === 'UNDER_REVIEW'"
+                style="border-radius: 0;"
+              >
+                {{ caseDetail()?.caseResponse?.status?.replace('_', ' ') }}
+              </span>
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Created By</label>
+              <p class="text-sm font-medium text-surface-dark">{{ caseDetail()?.caseResponse?.createdByEmail }}</p>
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Assigned To</label>
+              <p class="text-sm font-medium text-surface-dark">{{ caseDetail()?.caseResponse?.assignedToUserCode }}</p>
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Created At</label>
+              <p class="text-sm font-medium text-surface-dark">{{ caseDetail()?.caseResponse?.createdAt | date:'MMM d, yyyy, h:mm a' }}</p>
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Notes</label>
+              <p class="text-sm text-secondary leading-relaxed bg-gray-50 p-3 italic">
+                "{{ caseDetail()?.caseResponse?.notes || 'No notes available.' }}"
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Linked Alerts -->
+      <div class="lg:col-span-2">
+        <div class="bg-white border border-secondary/10 shadow-sm overflow-hidden">
+          <div class="p-6 border-b border-secondary/10">
+            <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest">
+              Linked Alerts ({{ caseDetail()?.alerts?.length }})
+            </h2>
+          </div>
+          
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-gray-50 border-b border-secondary/10">
+                <tr>
+                  <th class="py-3 px-6 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Alert ID</th>
+                  <th class="py-3 px-6 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Customer</th>
+                  <th class="py-3 px-6 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Scenario</th>
+                  <th class="py-3 px-6 text-[10px] font-bold text-gray-400 uppercase tracking-wider text-right">Created</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-secondary/5">
+                @for (alert of caseDetail()?.alerts; track alert.alertCode) {
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="py-4 px-6">
+                      <span class="text-xs font-mono text-primary font-medium">{{ alert.alertCode }}</span>
+                    </td>
+                    <td class="py-4 px-6">
+                      <div class="flex flex-col">
+                        <span class="text-sm font-medium text-surface-dark">{{ alert.customerName }}</span>
+                        <span class="text-[10px] text-secondary/60">{{ alert.customerCode }}</span>
+                      </div>
+                    </td>
+                    <td class="py-4 px-6">
+                      <span class="text-sm text-gray-600">{{ alert.scenarioName }}</span>
+                    </td>
+                    <td class="py-4 px-6 text-right text-sm text-secondary">
+                      {{ alert.createdAt | date:'MMM d, yyyy' }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="bg-gray-50 border border-secondary/10 p-12 text-center">
+      <p class="text-secondary italic">Case details not found.</p>
+      <button (click)="goBack()" class="mt-4 text-primary font-bold text-xs uppercase tracking-wider">Return to Cases</button>
+    </div>
+  }
+</div>
