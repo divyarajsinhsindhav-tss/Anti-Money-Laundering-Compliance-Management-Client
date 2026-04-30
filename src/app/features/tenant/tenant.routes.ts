@@ -8,15 +8,50 @@ export const tenantRoutes: Routes = [
   },
   {
     path: 'customers',
-    loadComponent: () => import('./customer/customer.component').then(m => m.CustomerComponent)
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./customer/customer.component').then(m => m.CustomerComponent),
+      },
+      {
+        path: 'file-upload',
+        loadComponent: () => import('./customer/file-upload/file-upload').then(m => m.FileUpload)
+      },
+      {
+        path: 'error',
+        loadComponent: () => import('./customer/error/error').then(m => m.CustomerErrorComponent)
+      }
+    ]
   },
   {
     path: 'transactions',
-    loadComponent: () => import('./transaction/transaction.component').then(m => m.TransactionComponent)
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./transaction/transaction.component').then(m => m.TransactionComponent)
+      },
+      {
+        path: 'file-upload',
+        loadComponent: () => import('./transaction/file-upload/file-upload').then(m => m.FileUpload)
+      },
+      {
+        path: 'error',
+        loadComponent: () => import('./transaction/error/error').then(m => m.TransactionErrorComponent)
+      }
+    ]
   },
   {
     path: 'rule-engine',
-    loadComponent: () => import('./rule-engine/rule-engine.component').then(m => m.RuleEngineComponent)
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./rule-engine/rule-engine.component').then(m => m.RuleEngineComponent)
+      },
+      {
+        path: 'run',
+        loadComponent: () => import('./rule-engine/run/run').then(m => m.RuleEngineRunComponent)
+      }
+    ]
   },
   {
     path: 'alerts',

@@ -4,6 +4,8 @@ import { tap, of, Observable, catchError, map, filter, shareReplay, finalize } f
 import { NavigationEnd, Router } from '@angular/router';
 import { LoginResponse, User, ApiResponse } from '@core/models/auth.model';
 
+import { API_CONFIG } from '../config/api.config';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -79,7 +81,7 @@ export class AuthService {
     localStorage.removeItem('user');
     localStorage.removeItem('role');
 
-    return this.http.post<LoginResponse>('http://localhost:8080/api/v1/auth/login', credentials, { headers }).pipe(
+    return this.http.post<LoginResponse>(`${API_CONFIG.BASE_URL}/auth/login`, credentials, { headers }).pipe(
       tap(response => {
         const data = response.data;
         localStorage.setItem(this.TOKEN_KEY, data.accessToken);
@@ -104,7 +106,7 @@ export class AuthService {
       return this.currentUserRequest$;
     }
 
-    this.currentUserRequest$ = this.http.get<ApiResponse<User>>('http://localhost:8080/api/v1/auth/me').pipe(
+    this.currentUserRequest$ = this.http.get<ApiResponse<User>>(`${API_CONFIG.BASE_URL}/auth/me`).pipe(
       tap(response => {
         this._user.set(response.data);
       }),
@@ -146,7 +148,7 @@ export class AuthService {
   }
 
   changePassword(request: { oldPassword: string; newPassword: string }): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>('http://localhost:8080/api/v1/auth/change-password', request);
+    return this.http.post<ApiResponse<any>>(`${API_CONFIG.BASE_URL}/auth/change-password`, request);
   }
 
   getToken(): string | null {

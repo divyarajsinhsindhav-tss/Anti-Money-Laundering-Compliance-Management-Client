@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, computed, OnDestroy } from '@angular
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ScenarioService } from '@core/services/scenario.service';
-import { Scenario, RuleInfo } from '../../../../models/scenario.model';
+import { Scenario, RuleInfo } from '../../../../core/models/scenario.model';
 import { MarkdownPipe } from '../../../../shared/pipes/markdown.pipe';
 
 @Component({

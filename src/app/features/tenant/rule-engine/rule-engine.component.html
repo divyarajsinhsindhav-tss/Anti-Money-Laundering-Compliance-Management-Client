@@ -1,5 +1,147 @@
-<div class="p-10 max-w-[1400px] mx-auto animate-in fade-in duration-700">
-  <div class="h-[60vh] border border-dashed border-secondary/10 flex items-center justify-center text-secondary/30 rounded-none">
-    <p class="text-sm font-medium uppercase tracking-[0.2em]">Module active. Awaiting configuration...</p>
+<div class="p-8 max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+  <!-- Page Header -->
+  <div class="flex justify-between items-end mb-10 border-b border-secondary/10 pb-8">
+    <div class="flex items-center gap-4">
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <h1 class="text-3xl font-bold text-surface-dark tracking-tight">Compliance Rule Engine</h1>
+        </div>
+        <p class="text-secondary text-sm">Manage and monitor automated detection scenarios and transaction monitoring
+          rules.</p>
+      </div>
+    </div>
+    <button (click)="navigateToRun()"
+      class="bg-primary text-white px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-primary/90 transition-all flex items-center gap-2"
+      style="border-radius: 0;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m5 3 14 9-14 9V3z" />
+      </svg>
+      Run Detection Cycle
+    </button>
+  </div>
+
+  <!-- Summary Stats -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+    <div class="bg-white border border-secondary/10 p-8 shadow-sm group hover:border-primary/30 transition-all">
+      <div class="flex justify-between items-start">
+        <div>
+          <h4 class="text-[10px] font-bold text-secondary uppercase tracking-[0.2em] mb-4">Active Scenario Portfolio
+          </h4>
+          <span class="text-4xl font-bold text-surface-dark tracking-tighter">{{ totalScenarios() }}</span>
+        </div>
+      </div>
+      <div class="mt-6 flex items-center gap-2 text-success">
+        <span class="text-[10px] font-bold uppercase tracking-widest">Configured Compliance Rules</span>
+      </div>
+    </div>
+
+    <div class="bg-white border border-secondary/10 p-8 shadow-sm group hover:border-primary/30 transition-all">
+      <div class="flex justify-between items-start">
+        <div>
+          <h4 class="text-[10px] font-bold text-secondary uppercase tracking-[0.2em] mb-4">Detection Cycle Volume</h4>
+          <span class="text-4xl font-bold text-surface-dark tracking-tighter">{{ totalRuns() }}</span>
+        </div>
+      </div>
+      <div class="mt-6 flex items-center gap-2 text-secondary/60">
+        <span class="text-[10px] font-bold uppercase tracking-widest">Cumulative Execution History</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="grid grid-cols-1 gap-8">
+    <!-- Active Rules Table -->
+    <div class="bg-white border border-secondary/10 shadow-sm overflow-hidden">
+      <div class="px-6 py-4 bg-gray-50/50 border-b border-secondary/10 flex justify-between items-center">
+        <h3 class="text-[10px] font-bold text-surface-dark uppercase tracking-[0.2em]">Configured Scenarios</h3>
+        <span class="text-[10px] font-bold text-secondary uppercase tracking-widest">{{ totalElements() }} Active
+          Rules</span>
+      </div>
+
+      @if (isLoading()) {
+      <div class="p-32 flex flex-col items-center">
+        <div class="relative w-12 h-12 mb-6">
+          <div class="absolute inset-0 border-4 border-primary/10 rounded-none"></div>
+          <div class="absolute inset-0 border-4 border-primary border-t-transparent animate-spin rounded-none"></div>
+        </div>
+        <span class="text-[10px] font-bold text-secondary uppercase tracking-[0.2em] animate-pulse">Initializing Rule
+          Engine...</span>
+      </div>
+      } @else {
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-gray-50/80 border-b border-secondary/10">
+              <th class="py-5 px-8 text-[10px] font-bold text-secondary uppercase tracking-widest w-[30%]">Scenario
+                Identification</th>
+              <th class="py-5 px-8 text-[10px] font-bold text-secondary uppercase tracking-widest w-[70%]">Description &
+                Scope</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-secondary/5">
+            @for (scenario of scenarios(); track scenario.id) {
+            <tr class="group hover:bg-surface-light/30 transition-all duration-300">
+              <td class="py-6 px-8">
+                <div class="flex flex-col gap-1">
+                  <span
+                    class="text-sm font-bold text-surface-dark tracking-tight group-hover:text-primary transition-colors">{{
+                    scenario.scenarioName }}</span>
+                  <div class="flex items-center gap-2">
+                    <span
+                      class="px-1.5 py-0.5 bg-gray-100 text-[9px] font-mono font-bold text-secondary tracking-tighter uppercase">{{
+                      scenario.scenarioCode }}</span>
+                    <span class="text-[9px] text-secondary/40 font-bold uppercase tracking-widest">ID: {{
+                      scenario.id?.toString()?.substring(0,8) }}</span>
+                  </div>
+                </div>
+              </td>
+              <td class="py-6 px-8">
+                <p class="text-xs text-secondary leading-relaxed line-clamp-2 max-w-2xl italic font-light">
+                  {{ scenario.description || 'No detailed description provided for this detection scenario.' }}
+                </p>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="2" class="py-24 text-center">
+                <div class="flex flex-col items-center gap-4 opacity-20">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                    <polyline points="14.5 2 14.5 7.5 20 7.5" />
+                  </svg>
+                  <span class="text-xs font-bold uppercase tracking-[0.3em]">No Active Scenarios Found</span>
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
+
+      <!-- Pagination Footer -->
+      <div class="px-8 py-5 bg-gray-50/80 border-t border-secondary/10 flex justify-between items-center">
+        <span class="text-[10px] font-bold text-secondary uppercase tracking-widest">Showing {{ scenarios().length }} of
+          {{ totalElements() }} rules</span>
+        <div class="flex gap-2">
+          <button [disabled]="page() === 0" (click)="page.set(page() - 1); fetchScenarios()"
+            class="p-2 border border-secondary/10 hover:bg-white disabled:opacity-30 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
+          <button [disabled]="(page() + 1) * size() >= totalElements()" (click)="page.set(page() + 1); fetchScenarios()"
+            class="p-2 border border-secondary/10 hover:bg-white disabled:opacity-30 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

@@ -2,14 +2,16 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/auth.model';
-import { Alert, AlertDetail, AlertStatus } from '../../models/alert.model';
+import { Alert, AlertDetail, AlertStatus } from '../models/alert.model';
+
+import { API_CONFIG } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlertService {
   private http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8080/api/v1/alerts';
+  private readonly baseUrl = `${API_CONFIG.BASE_URL}/alerts`;
 
   getAlerts(page: number, size: number, status?: string, alertCode?: string): Observable<ApiResponse<any>> {
     let params: any = { page, size };

@@ -148,3 +148,5 @@ const user: User = {
 ---
 
 ## 5. Never rounded border for cards
+
+## 6. Don't use $ sign instead use ₹

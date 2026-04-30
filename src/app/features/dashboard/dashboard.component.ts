@@ -2,7 +2,7 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { AdminService } from '../../core/services/admin.service';
-import { AdminDashboardStats } from '../../models/admin-dashboard.model';
+import { AdminDashboardStats } from '../../core/models/admin-dashboard.model';
 
 import { RouterModule } from '@angular/router';
 

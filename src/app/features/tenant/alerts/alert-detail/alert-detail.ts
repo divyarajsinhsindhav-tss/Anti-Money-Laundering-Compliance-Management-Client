@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../../../core/services/alert.service';
-import { AlertDetail, AlertStatus } from '../../../../models/alert.model';
+import { AlertDetail, AlertStatus } from '../../../../core/models/alert.model';
 
 @Component({
   selector: 'app-alert-detail',
@@ -67,6 +67,7 @@ export class AlertDetailComponent implements OnInit {
         scenarioName: 'Large Cash Deposit',
         customerName: 'Aman Sharma',
         customerCode: 'CUST-8829',
+        customerIncome: 1250000,
         alertStatus: 'OPEN',
         createdAt: new Date().toISOString()
       },
@@ -99,7 +100,8 @@ export class AlertDetailComponent implements OnInit {
           customerCode: 'CUST-8829',
           customerName: 'Aman Sharma',
           customerEmail: 'aman@example.com',
-          customerPhone: '9876543210'
+          customerPhone: '9876543210',
+          customerIncome: 1250000
         }
       ]
     };

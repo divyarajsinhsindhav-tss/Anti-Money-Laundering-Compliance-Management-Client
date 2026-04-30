@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CaseService } from '../../../../core/services/case.service';
-import { CaseDetail } from '../../../../models/case.model';
+import { CaseDetail } from '../../../../core/models/case.model';
 
 @Component({
   selector: 'app-case-detail',
@@ -46,5 +46,10 @@ export class CaseDetailComponent implements OnInit {
   goBack(): void {
     const tenant = this.router.url.split('/')[1];
     this.router.navigate([`/${tenant}/cases`]);
+  }
+
+  viewAlertDetail(alertCode: string): void {
+    const tenant = this.router.url.split('/')[1];
+    this.router.navigate([`/${tenant}/alerts`, alertCode]);
   }
 }

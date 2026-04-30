@@ -21,98 +21,107 @@
       <div class="h-64 bg-gray-100 animate-pulse"></div>
     </div>
   } @else if (caseDetail()) {
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Left Column: Case Info -->
-      <div class="lg:col-span-1 space-y-6">
-        <div class="bg-white border border-secondary/10 p-6 shadow-sm">
-          <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 border-b border-secondary/5 pb-4">
-            Case Summary
-          </h2>
-          
-          <div class="space-y-6">
-            <div>
-              <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Status</label>
-              <span 
-                class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide border"
-                [class.border-success/30]="caseDetail()?.caseResponse?.status?.startsWith('CLOSED')"
-                [class.text-success]="caseDetail()?.caseResponse?.status?.startsWith('CLOSED')"
-                [class.bg-success/5]="caseDetail()?.caseResponse?.status?.startsWith('CLOSED')"
-                [class.border-primary/30]="caseDetail()?.caseResponse?.status === 'UNDER_REVIEW'"
-                [class.text-primary]="caseDetail()?.caseResponse?.status === 'UNDER_REVIEW'"
-                [class.bg-primary/5]="caseDetail()?.caseResponse?.status === 'UNDER_REVIEW'"
-                style="border-radius: 0;"
-              >
-                {{ caseDetail()?.caseResponse?.status?.replace('_', ' ') }}
-              </span>
-            </div>
+    <div class="flex flex-col gap-8">
+      <!-- Row 1: Case Info -->
+      <div class="bg-white border border-secondary/10 p-8 shadow-sm">
+        <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-8 border-b border-secondary/5 pb-4">
+          Case Summary
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Status</label>
+            <span 
+              class="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-wide border"
+              [class.border-success/30]="caseDetail()?.caseResponse?.status?.startsWith('CLOSED')"
+              [class.text-success]="caseDetail()?.caseResponse?.status?.startsWith('CLOSED')"
+              [class.bg-success/5]="caseDetail()?.caseResponse?.status?.startsWith('CLOSED')"
+              [class.border-primary/30]="caseDetail()?.caseResponse?.status === 'UNDER_REVIEW'"
+              [class.text-primary]="caseDetail()?.caseResponse?.status === 'UNDER_REVIEW'"
+              [class.bg-primary/5]="caseDetail()?.caseResponse?.status === 'UNDER_REVIEW'"
+              style="border-radius: 0;"
+            >
+              {{ caseDetail()?.caseResponse?.status?.replace('_', ' ') }}
+            </span>
+          </div>
 
-            <div>
-              <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Created By</label>
-              <p class="text-sm font-medium text-surface-dark">{{ caseDetail()?.caseResponse?.createdByEmail }}</p>
-            </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Created By</label>
+            <p class="text-sm font-medium text-surface-dark">{{ caseDetail()?.caseResponse?.createdByEmail }}</p>
+          </div>
 
-            <div>
-              <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Assigned To</label>
-              <p class="text-sm font-medium text-surface-dark">{{ caseDetail()?.caseResponse?.assignedToUserCode }}</p>
-            </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Assigned To</label>
+            <p class="text-sm font-medium text-surface-dark">{{ caseDetail()?.caseResponse?.assignedToUserCode }}</p>
+          </div>
 
-            <div>
-              <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Created At</label>
-              <p class="text-sm font-medium text-surface-dark">{{ caseDetail()?.caseResponse?.createdAt | date:'MMM d, yyyy, h:mm a' }}</p>
-            </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Created At</label>
+            <p class="text-sm font-medium text-surface-dark">{{ caseDetail()?.caseResponse?.createdAt | date:'MMM d, yyyy, h:mm a' }}</p>
+          </div>
+        </div>
 
-            <div>
-              <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Notes</label>
-              <p class="text-sm text-secondary leading-relaxed bg-gray-50 p-3 italic">
-                "{{ caseDetail()?.caseResponse?.notes || 'No notes available.' }}"
-              </p>
-            </div>
+        <div class="mt-8 pt-8 border-t border-secondary/5">
+          <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3">Investigation Notes</label>
+          <div class="bg-gray-50 p-6 border-l-4 border-primary/20">
+            <p class="text-sm text-secondary leading-relaxed italic">
+              "{{ caseDetail()?.caseResponse?.notes || 'No notes available.' }}"
+            </p>
           </div>
         </div>
       </div>
 
-      <!-- Right Column: Linked Alerts -->
-      <div class="lg:col-span-2">
-        <div class="bg-white border border-secondary/10 shadow-sm overflow-hidden">
-          <div class="p-6 border-b border-secondary/10">
-            <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest">
-              Linked Alerts ({{ caseDetail()?.alerts?.length }})
-            </h2>
-          </div>
-          
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead class="bg-gray-50 border-b border-secondary/10">
-                <tr>
-                  <th class="py-3 px-6 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Alert ID</th>
-                  <th class="py-3 px-6 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Customer</th>
-                  <th class="py-3 px-6 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Scenario</th>
-                  <th class="py-3 px-6 text-[10px] font-bold text-gray-400 uppercase tracking-wider text-right">Created</th>
+      <!-- Row 2: Linked Alerts -->
+      <div class="bg-white border border-secondary/10 shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-secondary/10 bg-gray-50/50 flex justify-between items-center">
+          <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest">
+            Linked Alerts ({{ caseDetail()?.alerts?.length }})
+          </h2>
+          <span class="text-[10px] font-medium text-secondary/60 italic">Review individual alerts linked to this investigation</span>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead class="bg-gray-50 border-b border-secondary/10">
+              <tr>
+                <th class="py-4 px-6 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Alert ID</th>
+                <th class="py-4 px-6 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Customer Info</th>
+                <th class="py-4 px-6 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Detection Scenario</th>
+                <th class="py-4 px-6 text-[10px] font-bold text-gray-400 uppercase tracking-wider text-right">Detection Date</th>
+                <th class="py-4 px-6 text-[10px] font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-secondary/5">
+              @for (alert of caseDetail()?.alerts; track alert.alertCode) {
+                <tr class="hover:bg-gray-50 transition-colors group">
+                  <td class="py-4 px-6">
+                    <span class="text-xs font-mono text-primary font-medium bg-primary/5 px-2 py-1 border border-primary/10">{{ alert.alertCode }}</span>
+                  </td>
+                  <td class="py-4 px-6">
+                    <div class="flex flex-col">
+                      <span class="text-sm font-medium text-surface-dark group-hover:text-primary transition-colors">{{ alert.customerName }}</span>
+                      <span class="text-[10px] text-secondary/60 font-mono">{{ alert.customerCode }}</span>
+                    </div>
+                  </td>
+                  <td class="py-4 px-6">
+                    <span class="text-sm text-gray-600">{{ alert.scenarioName }}</span>
+                  </td>
+                  <td class="py-4 px-6 text-right text-sm text-secondary">
+                    {{ alert.createdAt | date:'MMM d, yyyy' }}
+                  </td>
+                  <td class="py-4 px-6 text-right">
+                    <button 
+                      (click)="viewAlertDetail(alert.alertCode)"
+                      class="bg-surface-dark text-white px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest hover:bg-primary transition-all shadow-sm"
+                      style="border-radius: 0;"
+                    >
+                      View Alert
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody class="divide-y divide-secondary/5">
-                @for (alert of caseDetail()?.alerts; track alert.alertCode) {
-                  <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="py-4 px-6">
-                      <span class="text-xs font-mono text-primary font-medium">{{ alert.alertCode }}</span>
-                    </td>
-                    <td class="py-4 px-6">
-                      <div class="flex flex-col">
-                        <span class="text-sm font-medium text-surface-dark">{{ alert.customerName }}</span>
-                        <span class="text-[10px] text-secondary/60">{{ alert.customerCode }}</span>
-                      </div>
-                    </td>
-                    <td class="py-4 px-6">
-                      <span class="text-sm text-gray-600">{{ alert.scenarioName }}</span>
-                    </td>
-                    <td class="py-4 px-6 text-right text-sm text-secondary">
-                      {{ alert.createdAt | date:'MMM d, yyyy' }}
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
+              }
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

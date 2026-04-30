@@ -1,5 +1,184 @@
-<div class="p-10 max-w-[1400px] mx-auto animate-in fade-in duration-700">
-  <div class="h-[60vh] border border-dashed border-secondary/10 flex items-center justify-center text-secondary/30 rounded-none">
-    <p class="text-sm font-medium uppercase tracking-[0.2em]">Module active. Awaiting configuration...</p>
+<div class="p-8 max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+  <!-- Page Header -->
+  <div class="flex justify-between items-center mb-8 border-b border-secondary/10 pb-6">
+    <div>
+      <h1 class="text-2xl font-semibold text-surface-dark">Transactions Dashboard</h1>
+      <p class="text-secondary text-sm">Overview of financial data ingestion and processing health.</p>
+    </div>
+    <div class="flex gap-4">
+      <button routerLink="error"
+        class="bg-white border border-secondary/10 text-secondary px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-surface-light transition-all flex items-center gap-2"
+        style="border-radius: 0;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        View Exceptions
+      </button>
+      <button routerLink="file-upload"
+        class="bg-primary text-white px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-primary-dark transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+        style="border-radius: 0;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="17 8 12 3 7 8" />
+          <line x1="12" y1="3" x2="12" y2="15" />
+        </svg>
+        Go to Upload
+      </button>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    @for (i of [1,2,3,4]; track i) {
+    <div class="h-32 bg-gray-50 border border-secondary/10 animate-pulse"></div>
+    }
+  </div>
+  } @else {
+  <!-- Stats Cards - Simple Style -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    <!-- Total Transactions -->
+    <div class="bg-white border border-secondary/10 p-6 shadow-sm">
+      <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Total Transactions</label>
+      <div class="flex items-baseline gap-2">
+        <span class="text-3xl font-bold text-surface-dark tracking-tighter">{{ stats()?.totalTransactions | number
+          }}</span>
+      </div>
+    </div>
+
+    <!-- Total Errors -->
+    <div class="bg-white border border-secondary/10 p-6 shadow-sm">
+      <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Total Errors</label>
+      <div class="flex items-baseline gap-2">
+        <span class="text-3xl font-bold text-danger tracking-tighter">{{ stats()?.totalErrors | number }}</span>
+      </div>
+    </div>
+
+    <!-- Total Jobs -->
+    <div class="bg-white border border-secondary/10 p-6 shadow-sm">
+      <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Total Batches</label>
+      <div class="flex items-baseline gap-2">
+        <span class="text-3xl font-bold text-primary tracking-tighter">{{ stats()?.totalBatches || 0 }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Ingestion Pipeline -->
+  <div class="space-y-6 mb-10">
+    <div class="flex justify-between items-end px-1">
+      <h3 class="text-[10px] font-bold text-surface-dark uppercase tracking-[0.2em]">Recent File Uploads</h3>
+      <span routerLink="file-upload"
+        class="text-[10px] font-bold text-primary uppercase tracking-widest cursor-pointer hover:underline">Manage
+        Uploads</span>
+    </div>
+    <div class="bg-white border border-secondary/10 shadow-sm overflow-hidden">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-gray-50 border-b border-secondary/10">
+            <th class="py-4 px-6 text-xs font-bold text-secondary uppercase tracking-wider">Job Information</th>
+            <th class="py-4 px-6 text-xs font-bold text-secondary uppercase tracking-wider text-center">Status</th>
+            <th class="py-4 px-6 text-xs font-bold text-secondary uppercase tracking-wider text-right">Started At</th>
+            <th class="py-4 px-6 text-xs font-bold text-secondary uppercase tracking-wider text-right">Completed At</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-secondary/5">
+          @for (job of stats()?.recentJobs; track job.id) {
+          <tr class="group hover:bg-gray-50/50 transition-colors">
+            <td class="py-5 px-6">
+              <div class="flex flex-col">
+                <span class="text-sm font-medium text-surface-dark tracking-tight">{{ job.fileName }}</span>
+                <span class="text-xs text-secondary/60 font-mono">{{ job.id }}</span>
+              </div>
+            </td>
+            <td class="py-5 px-6">
+              <div class="flex justify-center">
+                <span
+                  [class]="'px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide border ' + getStatusColor(job.status)"
+                  style="border-radius: 0;">
+                  {{ job.status }}
+                </span>
+              </div>
+            </td>
+            <td class="py-5 px-6 text-right">
+              <div class="flex flex-col">
+                <span class="text-sm font-medium text-surface-dark">{{ job.startTime | date:'HH:mm' }}</span>
+                <span class="text-xs text-secondary/60">{{ job.startTime | date:'MMM d, yyyy' }}</span>
+              </div>
+            </td>
+            <td class="py-5 px-6 text-right">
+              <div class="flex flex-col">
+                <span class="text-sm font-medium text-surface-dark">{{ job.endTime ? (job.endTime | date:'HH:mm') : '--:--' }}</span>
+                <span class="text-xs text-secondary/60">{{ job.endTime ? (job.endTime | date:'MMM d, yyyy') : '--:--' }}</span>
+              </div>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="4" class="py-12 text-center text-secondary/40 italic text-sm">
+              No recent ingestion batches found.
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent Errors Section -->
+  <div class="space-y-6">
+    <div class="flex justify-between items-end px-1">
+      <h3 class="text-[10px] font-bold text-surface-dark uppercase tracking-[0.2em]">Recent Processing Exceptions</h3>
+      <span routerLink="error"
+        class="text-[10px] font-bold text-primary uppercase tracking-widest cursor-pointer hover:underline">View All
+        Errors</span>
+    </div>
+    <div class="bg-white border border-secondary/10 shadow-sm overflow-hidden">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-gray-50 border-b border-secondary/10">
+            <th class="py-4 px-6 text-xs font-bold text-secondary uppercase tracking-wider">Error ID</th>
+            <th class="py-4 px-6 text-xs font-bold text-secondary uppercase tracking-wider">Transaction No</th>
+            <th class="py-4 px-6 text-xs font-bold text-secondary uppercase tracking-wider">Failure Reason</th>
+            <th class="py-4 px-6 text-xs font-bold text-secondary uppercase tracking-wider text-right">Timestamp</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-secondary/5">
+          @for (error of stats()?.recentErrors; track error.id) {
+          <tr class="group hover:bg-gray-50/50 transition-colors">
+            <td class="py-5 px-6">
+              <span class="text-xs font-mono text-danger font-bold uppercase tracking-wide">{{ error.errorCode }}</span>
+            </td>
+            <td class="py-5 px-6">
+              <span class="text-sm font-medium text-surface-dark">{{ error.transactionId }}</span>
+            </td>
+            <td class="py-5 px-6">
+              <span class="text-xs text-secondary leading-snug">{{ error.errorMessage }}</span>
+            </td>
+            <td class="py-5 px-6 text-right">
+              <div class="flex flex-col">
+                <span class="text-sm font-medium text-surface-dark">{{ error.timestamp | date:'HH:mm' }}</span>
+                <span class="text-xs text-secondary/60">{{ error.timestamp | date:'MMM d, yyyy' }}</span>
+              </div>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="4" class="py-12 text-center text-secondary/40 italic text-sm">
+              No recent validation exceptions reported.
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  }
+
+  <!-- Nested Views -->
+  <div class="mt-12">
+    <router-outlet></router-outlet>
   </div>
 </div>

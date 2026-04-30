@@ -1,15 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AdminDashboardStats } from '../../models/admin-dashboard.model';
+import { AdminDashboardStats } from '../models/admin-dashboard.model';
 import { ApiResponse } from '../models/auth.model';
+
+import { API_CONFIG } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
   private http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8080/api/v1/admin';
+  private readonly baseUrl = `${API_CONFIG.BASE_URL}/admin`;
 
   getDashboardStats(): Observable<ApiResponse<AdminDashboardStats>> {
     return this.http.get<ApiResponse<AdminDashboardStats>>(`${this.baseUrl}/dashboard/stats`);

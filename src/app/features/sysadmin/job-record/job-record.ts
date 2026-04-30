@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../../core/services/admin.service';
 import { TenantService } from '../../../core/services/tenant.service';
-import { RecentJob } from '../../../models/admin-dashboard.model';
+import { RecentJob } from '../../../core/models/admin-dashboard.model';
 
 @Component({
   selector: 'app-job-record',

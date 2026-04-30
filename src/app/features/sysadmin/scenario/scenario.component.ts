@@ -1,7 +1,7 @@
 import { Component, signal, computed, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { Scenario } from '../../../models/scenario.model';
+import { Scenario } from '../../../core/models/scenario.model';
 import { ScenarioService } from '@core/services/scenario.service';
 import { AuthService } from '@core/services/auth.service';
 

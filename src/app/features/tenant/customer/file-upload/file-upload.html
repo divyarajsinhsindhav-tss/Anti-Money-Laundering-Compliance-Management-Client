@@ -1,0 +1,144 @@
+<div class="p-8 max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+  <!-- Page Header -->
+  <div class="flex justify-between items-center mb-8 border-b border-secondary/10 pb-6">
+    <div>
+      <h1 class="text-2xl font-semibold text-surface-dark">Upload Customer Master Data</h1>
+      <p class="text-secondary text-sm">Upload CSV or Excel files to update the customer master database.</p>
+    </div>
+    <div class="flex gap-4">
+      <button (click)="loadJobs()" class="bg-white border border-secondary/10 text-secondary px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-surface-light transition-all flex items-center gap-2" style="border-radius: 0;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+        Refresh Pipeline
+      </button>
+      <button (click)="showUploadModal.set(true)" class="bg-primary text-white px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-primary-dark transition-all flex items-center gap-2 shadow-lg shadow-primary/20" style="border-radius: 0;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Select File to Upload
+      </button>
+    </div>
+  </div>
+
+  @if (showUploadModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+      <div class="absolute inset-0 bg-surface-dark/40 backdrop-blur-sm" (click)="showUploadModal.set(false)"></div>
+      <div class="relative bg-white w-full max-w-xl shadow-2xl animate-in zoom-in-95 duration-300" style="border-radius: 0;">
+        <div class="p-8 border-b border-secondary/10 flex justify-between items-center">
+          <h2 class="text-xl font-semibold text-surface-dark">Ingest Customer Records</h2>
+          <button (click)="showUploadModal.set(false)" class="text-gray-400 hover:text-primary transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+
+        <div class="p-10 space-y-8">
+          <div class="relative group">
+            <input type="file" (change)="onFileSelected($event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept=".csv,.xlsx">
+            <div class="border-2 border-dashed border-secondary/20 p-12 text-center group-hover:border-primary/50 transition-all bg-gray-50/50">
+              <div class="w-16 h-16 bg-primary/5 flex items-center justify-center text-primary mx-auto mb-6" style="border-radius: 0;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <h4 class="text-sm font-semibold text-surface-dark mb-1">
+                {{ selectedFile() ? selectedFile()?.name : 'Select Data Source' }}
+              </h4>
+              <p class="text-[10px] text-secondary font-bold uppercase tracking-widest">Supports CSV or Excel Format</p>
+            </div>
+          </div>
+
+          @if (selectedFile()) {
+            <div class="bg-primary/5 border border-primary/10 p-4 flex justify-between items-center animate-in slide-in-from-top-2">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-primary/10 flex items-center justify-center text-primary font-bold text-[10px]">FILE</div>
+                <span class="text-xs font-bold text-primary">{{ selectedFile()?.name }}</span>
+              </div>
+              <button (click)="selectedFile.set(null)" class="text-danger hover:underline text-[10px] font-bold uppercase tracking-widest">Remove</button>
+            </div>
+          }
+        </div>
+
+        <div class="p-8 bg-gray-50 border-t border-secondary/10 flex gap-4">
+          <button (click)="showUploadModal.set(false)" class="flex-1 bg-white border border-secondary/20 py-3 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-gray-100 transition-all" style="border-radius: 0;">
+            Cancel
+          </button>
+          <button (click)="uploadFile()" [disabled]="!selectedFile() || isUploading()" class="flex-1 bg-primary text-white py-3 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-primary-dark transition-all disabled:opacity-30 shadow-lg shadow-primary/10 flex items-center justify-center gap-3" style="border-radius: 0;">
+            @if (isUploading()) {
+              <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Processing...
+            } @else {
+              Start Ingestion
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Recent Jobs Table -->
+  <div class="space-y-6">
+    <div class="flex justify-between items-end px-1">
+      <h3 class="text-[10px] font-bold text-surface-dark uppercase tracking-[0.2em]">Live Ingestion Pipeline</h3>
+      <span class="text-[10px] font-bold text-secondary uppercase tracking-widest">Auto-refreshing</span>
+    </div>
+    <div class="bg-white border border-secondary/10 shadow-sm overflow-hidden">
+      @if (isLoading()) {
+        <div class="p-20 flex flex-col items-center">
+          <svg class="animate-spin h-8 w-8 text-primary mb-4" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span class="text-xs font-bold text-secondary uppercase tracking-widest">Loading Pipeline...</span>
+        </div>
+      } @else {
+        <div class="overflow-y-auto max-h-[400px] custom-scrollbar">
+          <table class="w-full text-left border-collapse min-w-[800px]">
+            <thead class="sticky top-0 z-10 bg-gray-50 shadow-sm">
+              <tr class="border-b border-secondary/10">
+                <th class="py-4 px-6 text-xs font-bold text-secondary uppercase tracking-wider">Job Information</th>
+                <th class="py-4 px-6 text-xs font-bold text-secondary uppercase tracking-wider text-center">Status</th>
+                <th class="py-4 px-6 text-xs font-bold text-secondary uppercase tracking-wider text-right">Started At</th>
+                <th class="py-4 px-6 text-xs font-bold text-secondary uppercase tracking-wider text-right">Completed At</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-secondary/5">
+              @for (job of jobs(); track job.id) {
+                <tr class="group hover:bg-gray-50/50 transition-colors">
+                  <td class="py-5 px-6">
+                    <div class="flex flex-col">
+                      <span class="text-sm font-medium text-surface-dark tracking-tight">{{ job.fileName }}</span>
+                      <span class="text-xs text-secondary/60 font-mono">{{ job.id }}</span>
+                    </div>
+                  </td>
+                  <td class="py-5 px-6">
+                    <div class="flex justify-center">
+                      <span [class]="'px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide border ' + getStatusColor(job.status)" style="border-radius: 0;">
+                        {{ job.status }}
+                      </span>
+                    </div>
+                  </td>
+                  <td class="py-5 px-6 text-right">
+                    <div class="flex flex-col">
+                      <span class="text-sm font-medium text-surface-dark">{{ job.startTime | date:'HH:mm' }}</span>
+                      <span class="text-xs text-secondary/60">{{ job.startTime | date:'MMM d, yyyy' }}</span>
+                    </div>
+                  </td>
+                  <td class="py-5 px-6 text-right">
+                    <div class="flex flex-col">
+                      <span class="text-sm font-medium text-surface-dark">{{ job.endTime ? (job.endTime | date:'HH:mm') : '--:--' }}</span>
+                      <span class="text-xs text-secondary/60">{{ job.endTime ? (job.endTime | date:'MMM d, yyyy') : '--:--' }}</span>
+                    </div>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="4" class="py-12 text-center text-secondary/40 italic text-sm">
+                    No active ingestion records found.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>

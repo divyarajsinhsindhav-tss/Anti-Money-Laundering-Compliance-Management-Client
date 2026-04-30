@@ -1,10 +1,10 @@
-export type AlertStatus = 
-  | 'OPEN' 
-  | 'UNDER_REVIEW' 
-  | 'ESCALATED' 
-  | 'CLOSED_TRUE_POSITIVE' 
-  | 'CLOSED_FALSE_POSITIVE' 
-  | 'CLOSED_INCONCLUSIVE' 
+export type AlertStatus =
+  | 'OPEN'
+  | 'UNDER_REVIEW'
+  | 'ESCALATED'
+  | 'CLOSED_TRUE_POSITIVE'
+  | 'CLOSED_FALSE_POSITIVE'
+  | 'CLOSED_INCONCLUSIVE'
   | 'IN_CASE';
 
 export interface Alert {
@@ -12,6 +12,7 @@ export interface Alert {
   scenarioName: string;
   customerName: string;
   customerCode: string;
+  customerIncome?: number;
   alertStatus: AlertStatus;
   createdAt: string;
 }
@@ -33,7 +34,7 @@ export interface Customer {
   customerName: string;
   customerEmail: string;
   customerPhone: string;
-  // Add other fields if needed based on CustomerResponse.java
+  customerIncome: number;
 }
 
 export interface AlertDetail {

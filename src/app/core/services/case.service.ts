@@ -1,15 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../models/case.model';
-import { Case, CaseDetail, CreateCaseRequest, CreateCaseResponse } from '../../models/case.model';
+import { ApiResponse } from '../models/case.model';
+import { Case, CaseDetail, CreateCaseRequest, CreateCaseResponse } from '../models/case.model';
+
+import { API_CONFIG } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CaseService {
   private http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8080/api/v1/cases';
+  private readonly baseUrl = `${API_CONFIG.BASE_URL}/cases`;
 
   getCases(page: number, size: number, status?: string): Observable<ApiResponse<any>> {
     let params: any = { page, size };

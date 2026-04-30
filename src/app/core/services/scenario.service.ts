@@ -1,15 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { Scenario, ScenarioPage } from '../../models/scenario.model';
+import { Scenario, ScenarioPage } from '../models/scenario.model';
 import { ApiResponse } from '../models/auth.model';
+
+import { API_CONFIG } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScenarioService {
   private http = inject(HttpClient);
-  private readonly API_BASE = 'http://localhost:8080/api/v1/admin';
+  private readonly API_BASE = `${API_CONFIG.BASE_URL}/admin`;
 
   getAllScenarios(): Observable<Scenario[]> {
     return this.http.get<ApiResponse<ScenarioPage>>(`${this.API_BASE}/scenarios`).pipe(

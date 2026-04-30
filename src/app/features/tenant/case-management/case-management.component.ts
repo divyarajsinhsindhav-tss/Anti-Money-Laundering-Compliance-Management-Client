@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CaseService } from '../../../core/services/case.service';
-import { Case } from '../../../models/case.model';
+import { Case } from '../../../core/models/case.model';
 
 @Component({
   selector: 'app-case-management',

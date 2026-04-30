@@ -14,11 +14,15 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const tenantId = existingTenantId || authService.tenantId() || 'public';
 
   // 2. Clone request and add common headers
-  let authReq = req.clone({
-    setHeaders: {
-      'Content-Type': 'application/json'
-    }
-  });
+  let authReq = req.clone();
+  
+  if (!(req.body instanceof FormData)) {
+    authReq = authReq.clone({
+      setHeaders: {
+        'Content-Type': 'application/json'
+      }
+    });
+  }
 
   // 3. Add X-Tenant-Id ONLY if it's not a public or system path
   if (!isPublicPath && !isSysPath) {

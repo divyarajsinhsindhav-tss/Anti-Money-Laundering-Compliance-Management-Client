@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TenantService } from '@core/services/tenant.service';
 import { ScenarioService } from '@core/services/scenario.service';
-import { Scenario } from '../../../../models/scenario.model';
+import { Scenario } from '../../../../core/models/scenario.model';
 import { TenantDetailResponse } from '@core/models/tenant.model';
 
 @Component({
