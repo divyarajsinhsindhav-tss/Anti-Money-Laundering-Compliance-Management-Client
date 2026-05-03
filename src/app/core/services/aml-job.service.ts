@@ -14,7 +14,7 @@ export interface RuleEngineResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AmlJobService {
   private http = inject(HttpClient);

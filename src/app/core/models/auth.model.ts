@@ -10,7 +10,13 @@ export interface LoginData {
   message: string;
   accessToken: string;
   tokenType: string;
-  role: 'SYSTEM_ADMIN' | 'BANK_ADMIN' | 'COMPLIANCE_OFFICER' | 'ROLE_SYSTEM_ADMIN' | 'ROLE_BANK_ADMIN' | 'ROLE_COMPLIANCE_OFFICER';
+  role:
+    | 'SYSTEM_ADMIN'
+    | 'BANK_ADMIN'
+    | 'COMPLIANCE_OFFICER'
+    | 'ROLE_SYSTEM_ADMIN'
+    | 'ROLE_BANK_ADMIN'
+    | 'ROLE_COMPLIANCE_OFFICER';
 }
 
 export type LoginResponse = ApiResponse<LoginData>;

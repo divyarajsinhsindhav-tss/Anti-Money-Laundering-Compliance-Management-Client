@@ -56,4 +56,3 @@ export interface TenantDetailResponse {
     totalSchemaSize: string;
   };
 }
-

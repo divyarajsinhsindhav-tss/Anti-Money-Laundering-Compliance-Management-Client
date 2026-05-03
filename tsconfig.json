@@ -16,15 +16,9 @@
     "module": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@models/*": [
-        "src/app/core/models/*"
-      ],
-      "@core/*": [
-        "src/app/core/*"
-      ],
-      "@shared/*": [
-        "src/app/shared/*"
-      ]
+      "@models/*": ["src/app/core/models/*"],
+      "@core/*": ["src/app/core/*"],
+      "@shared/*": ["src/app/shared/*"]
     }
   },
   "angularCompilerOptions": {

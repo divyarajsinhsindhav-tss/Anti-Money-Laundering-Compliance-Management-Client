@@ -9,7 +9,7 @@ import { TenantResponse } from '@core/models/tenant.model';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './tenant-management.component.html',
-  styleUrl: './tenant-management.component.css'
+  styleUrl: './tenant-management.component.css',
 })
 export class TenantManagementComponent implements OnInit {
   private tenantService = inject(TenantService);
@@ -21,10 +21,11 @@ export class TenantManagementComponent implements OnInit {
 
   filteredTenants = computed(() => {
     const query = this.searchQuery().toLowerCase();
-    return this.tenants().filter(t =>
-      t.name.toLowerCase().includes(query) ||
-      t.tenantCode.toLowerCase().includes(query) ||
-      t.displayName.toLowerCase().includes(query)
+    return this.tenants().filter(
+      (t) =>
+        t.name.toLowerCase().includes(query) ||
+        t.tenantCode.toLowerCase().includes(query) ||
+        t.displayName.toLowerCase().includes(query),
     );
   });
 
@@ -43,7 +44,7 @@ export class TenantManagementComponent implements OnInit {
       error: (err) => {
         console.error('Failed to load tenants', err);
         this.isLoading.set(false);
-      }
+      },
     });
   }
 
@@ -60,4 +61,3 @@ export class TenantManagementComponent implements OnInit {
     this.router.navigate(['/sys/tenants', tenantCode]);
   }
 }
-

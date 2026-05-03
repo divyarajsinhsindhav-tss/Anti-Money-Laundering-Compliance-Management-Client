@@ -7,7 +7,7 @@ import { ApiResponse } from '../models/auth.model';
 import { API_CONFIG } from '../config/api.config';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdminService {
   private http = inject(HttpClient);
@@ -17,7 +17,12 @@ export class AdminService {
     return this.http.get<ApiResponse<AdminDashboardStats>>(`${this.baseUrl}/dashboard/stats`);
   }
 
-  getJobRecords(page: number, size: number, status?: string, tenantCode?: string): Observable<ApiResponse<any>> {
+  getJobRecords(
+    page: number,
+    size: number,
+    status?: string,
+    tenantCode?: string,
+  ): Observable<ApiResponse<any>> {
     let params: any = { page, size };
     if (status) params.status = status;
     if (tenantCode) params.tenantCode = tenantCode;

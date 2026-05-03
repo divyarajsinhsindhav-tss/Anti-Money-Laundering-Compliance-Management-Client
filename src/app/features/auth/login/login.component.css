@@ -1,23 +1,45 @@
 /* Custom Animation Utilities for Tailwind */
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideInFromLeft {
-  from { transform: translateX(-2rem); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(-2rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes slideInFromRight {
-  from { transform: translateX(2rem); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(2rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes zoomIn {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .animate-in {
@@ -26,22 +48,47 @@
   animation-fill-mode: forwards;
 }
 
-.fade-in { animation-name: fadeIn; }
-.slide-in-from-left-8 { animation-name: slideInFromLeft; }
-.slide-in-from-right-8 { animation-name: slideInFromRight; }
-.zoom-in { animation-name: zoomIn; }
+.fade-in {
+  animation-name: fadeIn;
+}
+.slide-in-from-left-8 {
+  animation-name: slideInFromLeft;
+}
+.slide-in-from-right-8 {
+  animation-name: slideInFromRight;
+}
+.zoom-in {
+  animation-name: zoomIn;
+}
 
-.delay-200 { animation-delay: 200ms; }
-.delay-500 { animation-delay: 500ms; }
-.delay-700 { animation-delay: 700ms; }
+.delay-200 {
+  animation-delay: 200ms;
+}
+.delay-500 {
+  animation-delay: 500ms;
+}
+.delay-700 {
+  animation-delay: 700ms;
+}
 
-.duration-700 { animation-duration: 700ms; }
-.duration-1000 { animation-duration: 1000ms; }
+.duration-700 {
+  animation-duration: 700ms;
+}
+.duration-1000 {
+  animation-duration: 1000ms;
+}
 
 /* Custom Pulse with slight scale */
 @keyframes softPulse {
-  0%, 100% { opacity: 0.2; transform: scale(1); }
-  50% { opacity: 0.25; transform: scale(1.05); }
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.25;
+    transform: scale(1.05);
+  }
 }
 
 .animate-pulse {

@@ -10,7 +10,7 @@ import { MENU_CONFIG } from '../../core/config/menu.config';
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css'
+  styleUrl: './sidebar.component.css',
 })
 export class SidebarComponent {
   private authService = inject(AuthService);
@@ -27,25 +27,23 @@ export class SidebarComponent {
     const user = this.authService.user();
     const tenant = this.authService.tenantId() || 'public';
     const role = (user?.role || '').trim();
-    
+
     if (!role) return [];
 
-    const prefix = (tenant === 'public' || !tenant) ? '/sys' : `/${tenant}`;
-    
-    return MENU_CONFIG
-      .filter(item => {
-        if (!item.roles || item.roles.length === 0) return true;
-        if (item.roles.includes(role)) return true;
-        
-        const normalizedUserRole = role.replace(/^ROLE_/, '').toUpperCase();
-        return item.roles.some(r => {
-          const normalizedItemRole = r.replace(/^ROLE_/, '').toUpperCase();
-          return normalizedItemRole === normalizedUserRole;
-        });
-      })
-      .map(item => ({
-        ...item,
-        fullPath: `${prefix}/${item.path}`
-      }));
+    const prefix = tenant === 'public' || !tenant ? '/sys' : `/${tenant}`;
+
+    return MENU_CONFIG.filter((item) => {
+      if (!item.roles || item.roles.length === 0) return true;
+      if (item.roles.includes(role)) return true;
+
+      const normalizedUserRole = role.replace(/^ROLE_/, '').toUpperCase();
+      return item.roles.some((r) => {
+        const normalizedItemRole = r.replace(/^ROLE_/, '').toUpperCase();
+        return normalizedItemRole === normalizedUserRole;
+      });
+    }).map((item) => ({
+      ...item,
+      fullPath: `${prefix}/${item.path}`,
+    }));
   });
 }

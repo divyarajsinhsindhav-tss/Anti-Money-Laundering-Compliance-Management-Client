@@ -12,41 +12,71 @@
     <div class="flex flex-wrap gap-4">
       <!-- Status Filter -->
       <div class="w-full md:w-64">
-        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Filter by Status</label>
+        <label class="block text-sm font-bold text-gray-800 mb-2">Filter by Status</label>
         <div class="relative group">
-          <select 
-            [ngModel]="selectedStatus()" 
+          <select
+            [ngModel]="selectedStatus()"
             (ngModelChange)="onStatusChange($event)"
             class="appearance-none w-full bg-white border border-secondary/20 focus:border-primary px-4 py-2 text-sm text-surface-dark outline-none transition-all cursor-pointer hover:bg-surface-light shadow-sm"
-            style="border-radius: 0;"
+            style="border-radius: 0"
           >
             @for (status of statuses; track status.value) {
               <option [value]="status.value">{{ status.label }}</option>
             }
           </select>
-          <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          <div
+            class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
           </div>
         </div>
       </div>
 
       <!-- Tenant Filter -->
       <div class="w-full md:w-64">
-        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Filter by Tenant</label>
+        <label class="block text-sm font-bold text-gray-800 mb-2">Filter by Tenant</label>
         <div class="relative group">
-          <select 
-            [ngModel]="selectedTenant()" 
+          <select
+            [ngModel]="selectedTenant()"
             (ngModelChange)="onTenantChange($event)"
             class="appearance-none w-full bg-white border border-secondary/20 focus:border-primary px-4 py-2 text-sm text-gray-800 outline-none transition-all cursor-pointer hover:bg-surface-light shadow-sm"
-            style="border-radius: 0;"
+            style="border-radius: 0"
           >
             <option value="">All Tenants</option>
             @for (tenant of tenants(); track tenant.tenantCode) {
-              <option [value]="tenant.tenantCode">{{ tenant.name }} ({{ tenant.tenantCode }})</option>
+              <option [value]="tenant.tenantCode">
+                {{ tenant.name }} ({{ tenant.tenantCode }})
+              </option>
             }
           </select>
-          <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          <div
+            class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
           </div>
         </div>
       </div>
@@ -56,53 +86,93 @@
     <div class="flex justify-between items-center bg-gray-50 p-4 border border-secondary/10">
       <div class="flex items-center gap-6">
         <div class="flex items-center gap-3 border-r border-secondary/10 pr-6">
-          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Show</span>
+          <span class="text-sm font-bold text-gray-800">Show</span>
           <div class="relative group">
-            <select 
-              [ngModel]="pageSize()" 
+            <select
+              [ngModel]="pageSize()"
               (ngModelChange)="onPageSizeChange($event)"
               class="appearance-none bg-white border border-secondary/20 pl-3 pr-8 py-1.5 text-sm font-medium text-gray-800 outline-none focus:border-primary transition-all cursor-pointer hover:bg-white min-w-[70px]"
-              style="border-radius: 0;"
+              style="border-radius: 0"
             >
               <option [value]="5">5</option>
               <option [value]="10">10</option>
               <option [value]="25">25</option>
               <option [value]="50">50</option>
             </select>
-            <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            <div
+              class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
             </div>
           </div>
-          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Entries</span>
+          <span class="text-sm font-bold text-gray-800">Entries</span>
         </div>
-        <div class="text-xs text-gray-500 font-medium">
+        <div class="text-sm text-gray-500 font-medium">
           Showing {{ jobRecords().length }} of {{ totalElements() }} records
         </div>
       </div>
 
       <!-- Pagination Controls -->
       <div class="flex items-center gap-4">
-         <span class="text-xs font-bold text-gray-600 uppercase tracking-wider">
-           PAGE {{ currentPage() + 1 }} OF {{ totalPages() || 1 }}
-         </span>
-         <div class="flex gap-1">
-           <button 
-             (click)="prevPage()" 
-             [disabled]="currentPage() === 0 || isLoading()"
-             class="p-2 border border-secondary/20 hover:border-primary disabled:opacity-30 transition-all bg-white hover:bg-gray-100 group"
-             style="border-radius: 0;"
-           >
-             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 group-hover:text-primary"><path d="m15 18-6-6 6-6"/></svg>
-           </button>
-           <button 
-             (click)="nextPage()" 
-             [disabled]="currentPage() >= totalPages() - 1 || isLoading()"
-             class="p-2 border border-secondary/20 hover:border-primary disabled:opacity-30 transition-all bg-white hover:bg-gray-100 group"
-             style="border-radius: 0;"
-           >
-             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 group-hover:text-primary"><path d="m9 18 6-6-6-6"/></svg>
-           </button>
-         </div>
+        <span class="text-sm font-bold text-gray-800">
+          PAGE {{ currentPage() + 1 }} OF {{ totalPages() || 1 }}
+        </span>
+        <div class="flex gap-1">
+          <button
+            (click)="prevPage()"
+            [disabled]="currentPage() === 0 || isLoading()"
+            class="p-2 border border-secondary/20 hover:border-primary disabled:opacity-30 transition-all bg-white hover:bg-gray-100 group"
+            style="border-radius: 0"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-gray-500 group-hover:text-primary"
+            >
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
+          <button
+            (click)="nextPage()"
+            [disabled]="currentPage() >= totalPages() - 1 || isLoading()"
+            class="p-2 border border-secondary/20 hover:border-primary disabled:opacity-30 transition-all bg-white hover:bg-gray-100 group"
+            style="border-radius: 0"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-gray-500 group-hover:text-primary"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -113,11 +183,11 @@
       <table class="w-full text-left border-collapse">
         <thead class="sticky top-0 z-10 bg-gray-50 shadow-sm">
           <tr class="border-b border-secondary/10">
-            <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Tenant</th>
-            <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Job ID</th>
-            <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Type</th>
-            <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
-            <th class="py-3 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Execution Time</th>
+            <th class="py-3 px-6 text-sm font-bold text-gray-800">Tenant</th>
+            <th class="py-3 px-6 text-sm font-bold text-gray-800">Job ID</th>
+            <th class="py-3 px-6 text-sm font-bold text-gray-800">Type</th>
+            <th class="py-3 px-6 text-sm font-bold text-gray-800">Status</th>
+            <th class="py-3 px-6 text-sm font-bold text-gray-800 text-right">Execution Time</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-secondary/5">
@@ -135,11 +205,11 @@
                 <td class="py-4 px-6">
                   <div class="flex flex-col">
                     <span class="text-sm font-medium text-surface-dark">{{ job.tenantName }}</span>
-                    <span class="text-xs text-secondary/60">{{ job.tenantCode }}</span>
+                    <span class="text-sm text-secondary/60">{{ job.tenantCode }}</span>
                   </div>
                 </td>
                 <td class="py-4 px-6">
-                  <span class="text-xs text-gray-400 font-mono bg-gray-50 px-2 py-0.5">
+                  <span class="text-sm text-gray-400 font-mono bg-gray-50 px-2 py-0.5">
                     {{ job.jobId.split('-')[0] }}...
                   </span>
                 </td>
@@ -147,27 +217,31 @@
                   <span class="text-sm text-gray-700">{{ job.jobType }}</span>
                 </td>
                 <td class="py-4 px-6">
-                  <span 
-                    class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide border"
-                    [class.border-success/30]="job.status === 'COMPLETED'"
-                    [class.text-success]="job.status === 'COMPLETED'"
-                    [class.bg-success/5]="job.status === 'COMPLETED'"
-                    [class.border-primary/30]="job.status === 'RUNNING'"
-                    [class.text-primary]="job.status === 'RUNNING'"
-                    [class.bg-primary/5]="job.status === 'RUNNING'"
-                    [class.border-warning/30]="job.status === 'PENDING'"
-                    [class.text-warning]="job.status === 'PENDING'"
-                    [class.bg-warning/5]="job.status === 'PENDING'"
-                    [class.border-danger/30]="job.status === 'FAILED'"
-                    [class.text-danger]="job.status === 'FAILED'"
-                    [class.bg-danger/5]="job.status === 'FAILED'"
-                    style="border-radius: 0;"
+                  <span
+                    class="inline-block px-2 py-0.5 text-sm font-bold border"
+                    [class.border-success/30]="
+                      $any(job.status).toUpperCase().trim() === 'COMPLETED'
+                    "
+                    [class.text-success]="$any(job.status).toUpperCase().trim() === 'COMPLETED'"
+                    [class.bg-success/5]="$any(job.status).toUpperCase().trim() === 'COMPLETED'"
+                    [class.border-primary/30]="$any(job.status).toUpperCase().trim() === 'RUNNING'"
+                    [class.text-primary]="$any(job.status).toUpperCase().trim() === 'RUNNING'"
+                    [class.bg-primary/5]="$any(job.status).toUpperCase().trim() === 'RUNNING'"
+                    [class.border-warning/30]="$any(job.status).toUpperCase().trim() === 'PENDING'"
+                    [class.text-warning]="$any(job.status).toUpperCase().trim() === 'PENDING'"
+                    [class.bg-warning/5]="$any(job.status).toUpperCase().trim() === 'PENDING'"
+                    [class.border-danger/30]="$any(job.status).toUpperCase().trim() === 'FAILED'"
+                    [class.text-danger]="$any(job.status).toUpperCase().trim() === 'FAILED'"
+                    [class.bg-danger/5]="$any(job.status).toUpperCase().trim() === 'FAILED'"
+                    style="border-radius: 0"
                   >
                     {{ job.status }}
                   </span>
                 </td>
                 <td class="py-4 px-6 text-right">
-                  <span class="text-sm text-secondary">{{ job.createdAt | date:'MMM d, HH:mm:ss' }}</span>
+                  <span class="text-sm text-secondary">{{
+                    job.createdAt | date: 'MMM d, HH:mm:ss'
+                  }}</span>
                 </td>
               </tr>
             } @empty {

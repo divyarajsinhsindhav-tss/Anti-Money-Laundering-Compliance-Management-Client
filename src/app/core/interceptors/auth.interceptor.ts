@@ -8,19 +8,21 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = authService.getToken();
 
   // 1. Determine the context
-  const isPublicPath = req.url.includes('/api/v1/auth/') || req.url.includes('/check-tenant-available');
+  const isPublicPath =
+    req.url.includes('/api/v1/auth/login') ||
+    req.url.includes('/api/v1/tenants/check-tenant-available');
   const isSysPath = req.url.includes('/api/v1/admin/');
   const existingTenantId = req.headers.get('X-Tenant-Id');
   const tenantId = existingTenantId || authService.tenantId() || 'public';
 
   // 2. Clone request and add common headers
   let authReq = req.clone();
-  
+
   if (!(req.body instanceof FormData)) {
     authReq = authReq.clone({
       setHeaders: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
   }
 
@@ -28,16 +30,16 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (!isPublicPath && !isSysPath) {
     authReq = authReq.clone({
       setHeaders: {
-        'X-Tenant-Id': tenantId
-      }
+        'X-Tenant-Id': tenantId,
+      },
     });
   }
 
   if (token && !isPublicPath) {
     authReq = authReq.clone({
       setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -47,6 +49,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         authService.logout();
       }
       return throwError(() => error);
-    })
+    }),
   );
 };

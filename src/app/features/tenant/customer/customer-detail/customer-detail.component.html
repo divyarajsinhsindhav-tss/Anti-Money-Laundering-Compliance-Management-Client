@@ -1,0 +1,115 @@
+<div class="p-8 max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+  <!-- Back Button & Header -->
+  <div class="mb-10">
+    <button
+      routerLink=".."
+      class="flex items-center gap-2 text-sm font-bold text-secondary hover:text-primary transition-colors mb-6 group"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover:-translate-x-1 transition-transform">
+        <path d="m15 18-6-6 6-6" />
+      </svg>
+      Back to Listing
+    </button>
+
+    @if (customer()) {
+      <div class="flex justify-between items-start border-b border-secondary/10 pb-8">
+        <div>
+          <div class="flex items-center gap-4 mb-3">
+            <h1 class="text-3xl font-bold text-surface-dark tracking-tight">
+              {{ customer().firstName }} {{ customer().lastName }}
+            </h1>
+          </div>
+          <p class="text-secondary text-sm font-medium flex items-center gap-2">
+            CIF Number: <span class="text-primary font-mono font-bold">{{ customer().cif }}</span>
+          </p>
+        </div>
+        <div class="text-right">
+          <p class="text-xs font-bold text-secondary uppercase tracking-widest mb-1">Annual Declaration</p>
+          <p class="text-3xl font-bold text-surface-dark">₹{{ customer().income | number:'1.2-2' }}</p>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (isLoading()) {
+    <div class="p-32 flex flex-col items-center">
+      <div class="relative w-12 h-12 mb-6">
+        <div class="absolute inset-0 border-4 border-primary/30 rounded-none"></div>
+        <div class="absolute inset-0 border-4 border-primary border-t-transparent animate-spin rounded-none"></div>
+      </div>
+      <span class="text-sm font-bold text-gray-800 animate-pulse">Loading Profile...</span>
+    </div>
+  } @else if (customer()) {
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Left: Identity & Metadata -->
+      <div class="lg:col-span-1 space-y-8">
+        <div class="bg-white border border-secondary/10 p-8 shadow-sm">
+          <h3 class="text-sm font-bold text-surface-dark tracking-[0.2em] mb-8 uppercase">Customer Profile</h3>
+          
+          <div class="space-y-6">
+            <div>
+              <label class="block text-[10px] font-bold text-secondary/80 uppercase tracking-widest mb-1">Date of Birth</label>
+              <p class="text-sm font-bold text-surface-dark">{{ customer().dob | date: 'MMMM d, yyyy' }}</p>
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-secondary/80 uppercase tracking-widest mb-1">Total Accounts</label>
+              <p class="text-sm font-bold text-surface-dark">{{ customer().accounts?.length || 0 }} Active</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Attached Financial Nodes -->
+      <div class="lg:col-span-2">
+        <div class="bg-white border border-secondary/10 shadow-sm h-full flex flex-col">
+          <div class="px-8 py-5 bg-surface-light/50 border-b border-secondary/10 flex justify-between items-center">
+            <h3 class="text-sm font-bold text-surface-dark tracking-[0.2em] uppercase">Financial Accounts</h3>
+            <span class="text-xs font-bold text-secondary">{{ customer().accounts?.length || 0 }} Accounts</span>
+          </div>
+
+          <div class="overflow-x-auto flex-1">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-surface-light/30 border-b border-secondary/10">
+                  <th class="py-4 px-8 text-[10px] font-bold text-secondary uppercase tracking-widest">Account Number</th>
+                  <th class="py-4 px-8 text-[10px] font-bold text-secondary uppercase tracking-widest">Type</th>
+                  <th class="py-4 px-8 text-[10px] font-bold text-secondary uppercase tracking-widest text-right">Registration Date</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-secondary/5">
+                @for (account of customer().accounts; track account.accountId) {
+                  <tr class="group hover:bg-surface-light/30 transition-colors">
+                    <td class="py-5 px-8">
+                      <span class="text-sm font-mono font-bold text-primary">{{ account.accountNumber }}</span>
+                    </td>
+                    <td class="py-5 px-8">
+                      <span class="inline-block px-3 py-1 text-[10px] font-bold border uppercase tracking-widest" [class]="getAccountTypeClass(account.accountType)" style="border-radius: 0">
+                        {{ account.accountType }}
+                      </span>
+                    </td>
+                    <td class="py-5 px-8 text-right">
+                      <span class="text-sm text-surface-dark font-medium">
+                        {{ account.openedAt | date: 'MMM yyyy' }}
+                      </span>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="3" class="py-24 text-center">
+                      <div class="flex flex-col items-center gap-4 opacity-40">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-secondary"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                        <p class="text-xs font-bold tracking-[0.2em] uppercase text-secondary">No Accounts Found</p>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  }
+</div>

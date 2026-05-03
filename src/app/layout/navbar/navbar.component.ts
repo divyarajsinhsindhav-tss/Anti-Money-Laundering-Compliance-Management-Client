@@ -9,7 +9,7 @@ import { HumanizeRolePipe } from '../../shared/pipes/humanize-role.pipe';
   standalone: true,
   imports: [CommonModule, RouterModule, HumanizeRolePipe],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  styleUrl: './navbar.component.css',
 })
 export class NavbarComponent {
   authService = inject(AuthService);
@@ -27,7 +27,7 @@ export class NavbarComponent {
 
   toggleProfile(event: Event) {
     event.stopPropagation();
-    this.isProfileOpen.update(v => !v);
+    this.isProfileOpen.update((v) => !v);
   }
 
   logout() {

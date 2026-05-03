@@ -26,9 +26,8 @@ export class ScenarioDetailComponent implements OnInit, OnDestroy {
     const tenants = this.scenario()?.tenants || [];
     const query = this.tenantSearchQuery().toLowerCase();
     if (!query) return tenants;
-    return tenants.filter(t => 
-      t.name.toLowerCase().includes(query) || 
-      t.tenantCode.toLowerCase().includes(query)
+    return tenants.filter(
+      (t) => t.name.toLowerCase().includes(query) || t.tenantCode.toLowerCase().includes(query),
     );
   });
 
@@ -36,9 +35,9 @@ export class ScenarioDetailComponent implements OnInit, OnDestroy {
     const tenants = this.scenario()?.tenants || [];
     return {
       total: tenants.length,
-      // Assuming all returned tenants are active for now, 
+      // Assuming all returned tenants are active for now,
       // but we could filter by status if available
-      active: tenants.length 
+      active: tenants.length,
     };
   });
 
@@ -79,9 +78,11 @@ export class ScenarioDetailComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Error fetching scenario details', err);
-        this.error.set('Failed to load scenario details. It might not exist or you lack permissions.');
+        this.error.set(
+          'Failed to load scenario details. It might not exist or you lack permissions.',
+        );
         this.isLoading.set(false);
-      }
+      },
     });
   }
 }

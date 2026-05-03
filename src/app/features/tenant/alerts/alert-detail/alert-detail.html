@@ -3,7 +3,7 @@
   <div class="flex items-center gap-4 mb-8">
     <button (click)="goBack()"
       class="p-2 border border-secondary/20 hover:border-primary transition-all bg-white hover:bg-gray-50 group"
-      style="border-radius: 0;">
+      style="border-radius: 0">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
         class="text-gray-500 group-hover:text-primary">
@@ -12,8 +12,9 @@
     </button>
     <div>
       <h1 class="text-2xl font-semibold text-surface-dark">Alert Investigation</h1>
-      <p class="text-secondary text-sm">Reviewing Alert: <span class="font-mono font-bold text-primary">{{ alertId()
-          }}</span></p>
+      <p class="text-secondary text-sm">
+        Reviewing Alert: <span class="font-mono font-bold text-primary">{{ alertId() }}</span>
+      </p>
     </div>
   </div>
 
@@ -27,47 +28,78 @@
   </div>
   } @else if (alertDetail()) {
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-
     <!-- Left Column: Evidence & History -->
     <div class="lg:col-span-2 space-y-8">
-
       <!-- Summary Card -->
       <div class="bg-white border border-secondary/10 p-8 shadow-sm">
         <div class="flex justify-between items-start mb-8">
           <div>
-            <h2 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Scenario Information</h2>
-            <h3 class="text-xl font-semibold text-surface-dark">{{ alertDetail()!.alert.scenarioName }}</h3>
+            <h2 class="text-sm font-bold text-gray-800 mb-2 block">Scenario Information</h2>
+            <h3 class="text-xl font-semibold text-surface-dark">
+              {{ alertDetail()!.alert.scenarioName }}
+            </h3>
           </div>
-          <span class="px-3 py-1 text-xs font-bold uppercase tracking-wider border"
-            [class.border-warning/30]="alertDetail()!.alert.alertStatus === 'OPEN'"
-            [class.text-warning]="alertDetail()!.alert.alertStatus === 'OPEN'"
-            [class.bg-warning/5]="alertDetail()!.alert.alertStatus === 'OPEN'"
-            [class.border-primary/30]="alertDetail()!.alert.alertStatus === 'UNDER_REVIEW'"
-            [class.text-primary]="alertDetail()!.alert.alertStatus === 'UNDER_REVIEW'"
-            [class.bg-primary/5]="alertDetail()!.alert.alertStatus === 'UNDER_REVIEW'" style="border-radius: 0;">
+          <span class="px-3 py-1 text-sm font-bold border" [class.border-warning]="
+                $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim()?.includes('OPEN')
+              " [class.text-warning]="
+                $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim()?.includes('OPEN')
+              " [class.bg-warning-light]="
+                $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim()?.includes('OPEN')
+              " [class.border-primary/40]="
+                $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'REVIEWED'
+              " [class.text-primary]="
+                $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'REVIEWED'
+              " [class.bg-primary-lighter]="
+                $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'REVIEWED'
+              " [class.border-danger/40]="
+                $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'CLOSED'
+              " [class.text-danger]="
+                $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'CLOSED'
+              " [class.bg-danger-light]="
+                $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'CLOSED'
+              " [class.border-primary/40]="
+                $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'IN_CASE'
+              " [class.text-primary]="
+                $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'IN_CASE'
+              " [class.bg-primary-lighter]="
+                $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'IN_CASE'
+              " style="border-radius: 0">
             {{ alertDetail()!.alert.alertStatus.replace('_', ' ') }}
           </span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div class="space-y-1">
-            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Customer</span>
-            <p class="text-sm font-medium text-surface-dark">{{ alertDetail()!.alert.customerName }}</p>
-            <p class="text-xs text-secondary font-mono">{{ alertDetail()!.alert.customerCode }}</p>
-          </div>
-          <div class="space-y-1">
-            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Customer Income</span>
+            <span class="text-sm font-bold text-gray-800">Customer</span>
             <p class="text-sm font-medium text-surface-dark">
-              {{ alertDetail()!.alert.customerIncome | currency }}
+              {{ alertDetail()!.alert.customerName }}
+            </p>
+            <p class="text-sm text-secondary font-mono">
+              {{ alertDetail()!.alert.customerCode }}
             </p>
           </div>
           <div class="space-y-1">
-            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Alert Code</span>
-            <p class="text-sm font-medium text-surface-dark">{{ alertDetail()!.alert.alertCode }}</p>
+            <span class="text-sm font-bold text-gray-800">Customer Income</span>
+            <p class="text-sm font-medium text-surface-dark">
+              {{ alertDetail()!.alert.customerIncome | currency: 'INR' }}
+            </p>
           </div>
           <div class="space-y-1">
-            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Generated On</span>
-            <p class="text-sm font-medium text-surface-dark">{{ alertDetail()!.alert.createdAt | date:'MMM d, yyyy HH:mm' }}</p>
+            <span class="text-sm font-bold text-gray-800">Alert Code</span>
+            <p class="text-sm font-medium text-surface-dark">
+              {{ alertDetail()!.alert.alertCode }}
+            </p>
+          </div>
+          <div class="space-y-1">
+            <span class="text-sm font-bold text-gray-800">Generated On</span>
+            <p class="text-sm font-medium text-surface-dark">
+              {{
+              alertDetail()!.alert.createdAt
+              | date
+              : 'MMM d, yyyy
+              HH:mm'
+              }}
+            </p>
           </div>
         </div>
       </div>
@@ -75,33 +107,38 @@
       <!-- Related Transactions -->
       <div class="bg-white border border-secondary/10 shadow-sm overflow-hidden">
         <div class="px-8 py-4 bg-gray-50/50 border-b border-secondary/10 flex justify-between items-center">
-          <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest">Related Transactions</h2>
-          <span class="text-[10px] font-bold text-primary bg-primary/5 px-2 py-0.5 border border-primary/20">
+          <h2 class="text-sm font-bold text-gray-800">Related Transactions</h2>
+          <span class="text-sm font-bold text-gray-800 bg-primary/5 px-2 py-0.5 border border-primary/20">
             {{ alertDetail()!.financialTransactionResponsesList.length }} TRANSACTIONS
           </span>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left">
             <thead>
-              <tr
-                class="bg-gray-50/30 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-secondary/5">
-                <th class="py-3 px-8">TXN No</th>
-                <th class="py-3 px-4 text-right">Amount</th>
-                <th class="py-3 px-4">Type</th>
-                <th class="py-3 px-4">Direction</th>
-                <th class="py-3 px-8 text-right">Timestamp</th>
+              <tr class="bg-gray-50/30 text-sm font-bold text-gray-800 border-b border-secondary/5">
+                <th class="py-3 px-8 text-sm font-bold text-gray-800">TXN No</th>
+                <th class="py-3 px-4 text-sm font-bold text-gray-800 text-right">Amount</th>
+                <th class="py-3 px-4 text-sm font-bold text-gray-800">Type</th>
+                <th class="py-3 px-4 text-sm font-bold text-gray-800">Direction</th>
+                <th class="py-3 px-8 text-sm font-bold text-gray-800 text-right">Timestamp</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-secondary/5">
               @for (txn of alertDetail()!.financialTransactionResponsesList; track txn.txnNo) {
               <tr class="hover:bg-gray-50/50 transition-colors">
-                <td class="py-4 px-8 text-xs font-mono font-bold text-primary">{{ txn.txnNo }}</td>
-                <td class="py-4 px-4 text-sm font-semibold text-surface-dark text-right">{{ txn.amount | currency }}
+                <td class="py-4 px-8 text-sm font-mono font-bold text-primary">
+                  {{ txn.txnNo }}
                 </td>
-                <td class="py-4 px-4 text-xs font-medium text-secondary uppercase">{{ txn.txnType }}</td>
-                <td class="py-4 px-4 text-xs font-medium text-secondary uppercase">{{ txn.direction }}</td>
-                <td class="py-4 px-8 text-xs text-secondary text-right">{{ txn.txnTimestamp | date:'MMM d, yyyy HH:mm'
-                  }}</td>
+                <td class="py-4 px-4 text-sm font-semibold text-surface-dark text-right">
+                  {{ txn.amount | currency: 'INR' }}
+                </td>
+                <td class="py-4 px-4 text-sm font-medium text-secondary">{{ txn.txnType }}</td>
+                <td class="py-4 px-4 text-sm font-medium text-secondary">
+                  {{ txn.direction }}
+                </td>
+                <td class="py-4 px-8 text-sm text-secondary text-right">
+                  {{ txn.txnTimestamp | date: 'MMM d, yyyy HH:mm' }}
+                </td>
               </tr>
               }
             </tbody>
@@ -112,75 +149,122 @@
 
     <!-- Right Column: Investigation Actions -->
     <div class="space-y-8">
-      @if (alertDetail()!.alert.alertStatus !== 'IN_CASE') {
-        <div class="bg-white border border-secondary/10 p-8 shadow-sm animate-in fade-in slide-in-from-right-4 duration-500">
-          <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">Investigation Findings</h2>
+      @if (canUpdate()) {
+      <div
+        class="bg-white border border-secondary/10 p-8 shadow-sm animate-in fade-in slide-in-from-right-4 duration-500">
+        <h2 class="text-sm font-bold text-gray-800 mb-6">Investigation Findings</h2>
 
-          <div class="space-y-6">
-            <div>
-              <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Update
-                Status</label>
-              <div class="relative group">
-                <select [(ngModel)]="newStatus"
-                  class="appearance-none w-full bg-white border border-secondary/20 focus:border-primary px-4 py-3 text-sm text-surface-dark outline-none transition-all cursor-pointer hover:bg-surface-light"
-                  style="border-radius: 0;">
-                  @for (status of statuses; track status.value) {
-                  <option [value]="status.value">{{ status.label }}</option>
-                  }
-                </select>
-                <div
-                  class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m6 9 6 6 6-6" />
-                  </svg>
-                </div>
+        <div class="space-y-6">
+          <div>
+            <label class="block text-sm font-bold text-gray-800 mb-3">Update Status</label>
+            <div class="relative group">
+              <select [(ngModel)]="newStatus"
+                class="appearance-none w-full bg-white border border-secondary/20 focus:border-primary px-4 py-3 text-sm text-surface-dark outline-none transition-all cursor-pointer hover:bg-surface-light"
+                style="border-radius: 0">
+                @for (status of statuses; track status.value) {
+                <option [value]="status.value">{{ status.label }}</option>
+                }
+              </select>
+              <div
+                class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
               </div>
             </div>
-
-            <div>
-              <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Reason /
-                Observations</label>
-              <textarea [(ngModel)]="reason" rows="6" placeholder="Record your investigation findings here..."
-                class="w-full bg-white border border-secondary/20 focus:border-primary px-4 py-3 text-sm text-surface-dark outline-none transition-all resize-none hover:bg-surface-light placeholder:text-secondary/30"
-                style="border-radius: 0;"></textarea>
-            </div>
-
-            <button (click)="updateStatus()" [disabled]="isUpdating() || !reason()"
-              class="w-full bg-surface-dark text-white py-4 text-xs font-bold uppercase tracking-widest hover:bg-primary transition-all disabled:opacity-30 disabled:bg-gray-400"
-              style="border-radius: 0;">
-              @if (isUpdating()) {
-              <span class="flex items-center justify-center gap-2">
-                <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none">
-                  </circle>
-                  <path class="opacity-75" fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                  </path>
-                </svg>
-                Processing...
-              </span>
-              } @else {
-              Save Findings
-              }
-            </button>
           </div>
+
+          <div>
+            <label class="block text-sm font-bold text-gray-800 mb-3">Reason / Observations</label>
+            <textarea [(ngModel)]="reason" rows="6" placeholder="Record your investigation findings here..."
+              class="w-full bg-white border border-secondary/20 focus:border-primary px-4 py-3 text-sm text-surface-dark outline-none transition-all resize-none hover:bg-surface-light placeholder:text-secondary/30"
+              style="border-radius: 0"></textarea>
+          </div>
+
+          <button (click)="updateStatus()" [disabled]="isUpdating() || !reason()"
+            class="w-full bg-primary text-white py-4 text-sm font-bold hover:bg-primary transition-all disabled:opacity-30 disabled:bg-gray-400"
+            style="border-radius: 0">
+            @if (isUpdating()) {
+            <span class="flex items-center justify-center gap-2">
+              <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none">
+                </circle>
+                <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+              </svg>
+              Processing...
+            </span>
+            } @else {
+            Save Findings
+            }
+          </button>
         </div>
+      </div>
       } @else {
-        <div class="bg-indigo-50 border border-indigo-200 p-8 shadow-sm animate-in fade-in slide-in-from-right-4 duration-500">
-          <div class="flex items-center gap-3 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-600"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <h2 class="text-xs font-bold text-indigo-900 uppercase tracking-widest">Active Investigation</h2>
-          </div>
-          <p class="text-sm text-indigo-700 leading-relaxed">
-            This alert is currently being investigated as part of a collective case. 
-            Individual status updates are disabled to maintain data integrity across the case workflow.
-          </p>
-          <div class="mt-6 pt-6 border-t border-indigo-200">
-             <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block mb-2">Current Status</span>
-             <span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide border border-indigo-500/30 text-indigo-600 bg-indigo-50">IN CASE</span>
-          </div>
+      <div
+        class="bg-gray-50 border border-secondary/20 p-8 shadow-sm animate-in fade-in slide-in-from-right-4 duration-500">
+        <div class="flex items-center gap-3 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="text-secondary">
+            <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          <h2 class="text-sm font-bold text-gray-800">
+            {{
+            alertDetail()!.alert.alertStatus === 'OPEN'
+            ? 'Pending Assignment'
+            : 'Read-Only View'
+            }}
+          </h2>
         </div>
+
+        @if (alertDetail()!.alert.alertStatus === 'OPEN') {
+        <p class="text-sm text-secondary/80 leading-relaxed mb-6">
+          This alert is currently in <strong>OPEN</strong> status and has not been assigned to
+          a case yet. Manual investigations are only permitted once an alert is grouped into a
+          case.
+        </p>
+        } @else {
+        <p class="text-sm text-secondary/80 leading-relaxed mb-6">
+          You are viewing this alert in read-only mode. Only the assigned Compliance Officer
+          can modify investigation findings while the case is under review.
+        </p>
+        }
+
+        <div class="pt-6 border-t border-secondary/10">
+          <span class="text-sm font-bold text-gray-800/40 block mb-2">Current Status</span>
+          <span class="inline-block px-3 py-1 text-sm font-bold border" [class.border-warning]="
+                  $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim()?.includes('OPEN')
+                " [class.text-warning]="
+                  $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim()?.includes('OPEN')
+                " [class.bg-warning-light]="
+                  $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim()?.includes('OPEN')
+                " [class.border-primary/40]="
+                  $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'REVIEWED'
+                " [class.text-primary]="
+                  $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'REVIEWED'
+                " [class.bg-primary-lighter]="
+                  $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'REVIEWED'
+                " [class.border-danger/40]="
+                  $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'CLOSED'
+                " [class.text-danger]="
+                  $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'CLOSED'
+                " [class.bg-danger-light]="
+                  $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'CLOSED'
+                " [class.border-primary/40]="
+                  $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'IN_CASE'
+                " [class.text-primary]="
+                  $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'IN_CASE'
+                " [class.bg-primary-lighter]="
+                  $any(alertDetail()?.alert?.alertStatus)?.toUpperCase()?.trim() === 'IN_CASE'
+                " style="border-radius: 0">
+            {{ alertDetail()!.alert.alertStatus.replace('_', ' ') }}
+          </span>
+        </div>
+      </div>
       }
 
       <!-- Compliance Reminder -->
@@ -194,10 +278,10 @@
             <line x1="12" y1="8" x2="12.01" y2="8" />
           </svg>
           <div>
-            <h4 class="text-xs font-bold text-primary uppercase tracking-wider mb-1">Compliance Note</h4>
-            <p class="text-[11px] text-primary/80 leading-relaxed">
-              Ensure all evidence is documented according to the AML Policy. Changes to alert status are audited and
-              logged for regulatory review.
+            <h4 class="text-sm font-bold text-primary mb-1">Compliance Note</h4>
+            <p class="text-sm text-primary/80 leading-relaxed">
+              Ensure all evidence is documented according to the AML Policy. Changes to alert
+              status are audited and logged for regulatory review.
             </p>
           </div>
         </div>

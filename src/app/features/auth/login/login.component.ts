@@ -1,26 +1,40 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormGroup,
+  FormControl,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { TenantService } from '../../../core/services/tenant.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private authService = inject(AuthService);
   private tenantService = inject(TenantService);
+  private toastService = inject(ToastService);
 
   loginForm = new FormGroup({
-    email: new FormControl('', { validators: [Validators.required, Validators.email], nonNullable: true }),
-    password: new FormControl('', { validators: [Validators.required, Validators.minLength(6)], nonNullable: true })
+    email: new FormControl('', {
+      validators: [Validators.required, Validators.email],
+      nonNullable: true,
+    }),
+    password: new FormControl('', {
+      validators: [Validators.required, Validators.minLength(6)],
+      nonNullable: true,
+    }),
   });
 
   isSystemAdmin = signal(false);
@@ -29,10 +43,10 @@ export class LoginComponent implements OnInit {
   showPassword = signal(false);
   errorMessage = signal<string | null>(null);
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const tenant = params['tenant'];
       this.tenantId.set(tenant || null);
       this.isSystemAdmin.set(this.router.url.includes('/sys/login'));
@@ -43,7 +57,7 @@ export class LoginComponent implements OnInit {
         if (user) {
           this.redirectUser(user, tenant);
         } else {
-          this.authService.fetchCurrentUser().subscribe(u => {
+          this.authService.fetchCurrentUser().subscribe((u) => {
             if (u) this.redirectUser(u, tenant);
           });
         }
@@ -82,7 +96,7 @@ export class LoginComponent implements OnInit {
       },
       error: () => {
         this.router.navigate(['/not-found']);
-      }
+      },
     });
   }
 
@@ -97,9 +111,11 @@ export class LoginComponent implements OnInit {
       this.authService.login(credentials, tenant || undefined).subscribe({
         next: (response) => {
           this.loading.set(false);
+          this.toastService.success('Login successful! Welcome back.');
           const loginData = response.data;
-          const isSysAdmin = loginData.role === 'SYSTEM_ADMIN' || loginData.role === 'ROLE_SYSTEM_ADMIN';
-          
+          const isSysAdmin =
+            loginData.role === 'SYSTEM_ADMIN' || loginData.role === 'ROLE_SYSTEM_ADMIN';
+
           // Redirect immediately using role from response and current tenant context
           if (isSysAdmin) {
             this.router.navigate(['/sys/dashboard']);
@@ -111,8 +127,10 @@ export class LoginComponent implements OnInit {
         },
         error: (err) => {
           this.loading.set(false);
-          this.errorMessage.set(err.error?.message || 'Login failed. Please check your credentials.');
-        }
+          this.errorMessage.set(
+            err.error?.message || 'Login failed. Please check your credentials.',
+          );
+        },
       });
     } else {
       this.loginForm.markAllAsTouched();
@@ -120,6 +138,6 @@ export class LoginComponent implements OnInit {
   }
 
   togglePasswordVisibility(): void {
-    this.showPassword.update(v => !v);
+    this.showPassword.update((v) => !v);
   }
 }

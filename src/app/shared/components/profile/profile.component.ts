@@ -1,6 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { AuthService } from '@core/services/auth.service';
 
 @Component({
@@ -8,7 +14,7 @@ import { AuthService } from '@core/services/auth.service';
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  styleUrls: ['./profile.component.css'],
 })
 export class ProfileComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -16,18 +22,21 @@ export class ProfileComponent implements OnInit {
 
   user = this.authService.user;
   activeTab = signal<'general' | 'security'>('general');
-  
+
   passwordForm: FormGroup;
   isChangingPassword = signal(false);
   passwordError = signal<string | null>(null);
   passwordSuccess = signal<string | null>(null);
 
   constructor() {
-    this.passwordForm = this.fb.group({
-      oldPassword: ['', [Validators.required]],
-      newPassword: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', [Validators.required]]
-    }, { validators: this.passwordMatchValidator });
+    this.passwordForm = this.fb.group(
+      {
+        oldPassword: ['', [Validators.required]],
+        newPassword: ['', [Validators.required, Validators.minLength(8)]],
+        confirmPassword: ['', [Validators.required]],
+      },
+      { validators: this.passwordMatchValidator },
+    );
   }
 
   ngOnInit(): void {
@@ -39,7 +48,8 @@ export class ProfileComponent implements OnInit {
 
   passwordMatchValidator(g: FormGroup) {
     return g.get('newPassword')?.value === g.get('confirmPassword')?.value
-      ? null : { 'mismatch': true };
+      ? null
+      : { mismatch: true };
   }
 
   setActiveTab(tab: 'general' | 'security'): void {
@@ -56,7 +66,7 @@ export class ProfileComponent implements OnInit {
     this.passwordSuccess.set(null);
 
     const { oldPassword, newPassword } = this.passwordForm.value;
-    
+
     this.authService.changePassword({ oldPassword, newPassword }).subscribe({
       next: (res) => {
         this.isChangingPassword.set(false);
@@ -65,8 +75,10 @@ export class ProfileComponent implements OnInit {
       },
       error: (err) => {
         this.isChangingPassword.set(false);
-        this.passwordError.set(err.error?.message || 'Failed to update password. Please verify your current password.');
-      }
+        this.passwordError.set(
+          err.error?.message || 'Failed to update password. Please verify your current password.',
+        );
+      },
     });
   }
 }

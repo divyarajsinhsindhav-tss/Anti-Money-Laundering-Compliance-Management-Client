@@ -13,13 +13,13 @@ export const authGuard: CanActivateFn = (route, state) => {
 
     if (!user) {
       return authService.fetchCurrentUser().pipe(
-        map(u => {
+        map((u) => {
           if (u) {
             return checkAccess(u, state, route, router);
           }
           return handleUnauthenticated(state, route, router);
         }),
-        catchError(() => of(handleUnauthenticated(state, route, router)))
+        catchError(() => of(handleUnauthenticated(state, route, router))),
       );
     }
 
@@ -50,7 +50,9 @@ function checkAccess(user: User, state: any, route: any, router: Router): boolea
 
     // Tenant user trying to access system routes
     if (isSysRoute) {
-      return userTenant ? router.parseUrl(`/${userTenant}/dashboard`) : router.parseUrl('/sys/login');
+      return userTenant
+        ? router.parseUrl(`/${userTenant}/dashboard`)
+        : router.parseUrl('/sys/login');
     }
 
     // Tenant user trying to access a different tenant's route

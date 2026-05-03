@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'humanizeRole',
-  standalone: true
+  standalone: true,
 })
 export class HumanizeRolePipe implements PipeTransform {
   transform(value: string | undefined | null): string {
@@ -18,7 +18,7 @@ export class HumanizeRolePipe implements PipeTransform {
     return result
       .toLowerCase()
       .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   }
 }

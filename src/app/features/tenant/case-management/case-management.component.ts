@@ -10,7 +10,7 @@ import { Case } from '../../../core/models/case.model';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './case-management.component.html',
-  styleUrls: ['./case-management.component.css']
+  styleUrls: ['./case-management.component.css'],
 })
 export class CaseManagementComponent implements OnInit {
   private caseService = inject(CaseService);
@@ -18,13 +18,13 @@ export class CaseManagementComponent implements OnInit {
 
   cases = signal<Case[]>([]);
   isLoading = signal<boolean>(false);
-  
+
   // Pagination & Filters
   currentPage = signal<number>(0);
   pageSize = signal<number>(10);
   totalElements = signal<number>(0);
   totalPages = signal<number>(0);
-  
+
   selectedStatus = signal<string>('');
 
   statuses = [
@@ -32,9 +32,7 @@ export class CaseManagementComponent implements OnInit {
     { label: 'Open', value: 'OPEN' },
     { label: 'Under Review', value: 'UNDER_REVIEW' },
     { label: 'Escalated', value: 'ESCALATED' },
-    { label: 'Closed SAR Filed', value: 'CLOSED_SAR_FILED' },
-    { label: 'Closed No Action', value: 'CLOSED_NO_ACTION' },
-    { label: 'Closed Inconclusive', value: 'CLOSED_INCONCLUSIVE' }
+    { label: 'Closed', value: 'CLOSED' },
   ];
 
   ngOnInit(): void {
@@ -43,27 +41,25 @@ export class CaseManagementComponent implements OnInit {
 
   loadCases(): void {
     this.isLoading.set(true);
-    this.caseService.getCases(
-      this.currentPage(),
-      this.pageSize(),
-      this.selectedStatus() || undefined
-    ).subscribe({
-      next: (response) => {
-        if (response.data) {
-          this.cases.set(response.data.content || []);
-          const meta = response.data.meta;
-          if (meta) {
-            this.totalElements.set(meta.totalElements || 0);
-            this.totalPages.set(meta.totalPages || 0);
+    this.caseService
+      .getCases(this.currentPage(), this.pageSize(), this.selectedStatus() || undefined)
+      .subscribe({
+        next: (response) => {
+          if (response.data) {
+            this.cases.set(response.data.content || []);
+            const meta = response.data.meta;
+            if (meta) {
+              this.totalElements.set(meta.totalElements || 0);
+              this.totalPages.set(meta.totalPages || 0);
+            }
           }
-        }
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.isLoading.set(false);
-        this.setMockData();
-      }
-    });
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.isLoading.set(false);
+          this.setMockData();
+        },
+      });
   }
 
   setMockData(): void {
@@ -72,21 +68,34 @@ export class CaseManagementComponent implements OnInit {
         caseCode: 'CAS-1001',
         createdByEmail: 'admin@bank.com',
         assignedToUserCode: 'OFF-001',
+        assignedToEmail: 'officer1@bank.com',
+
         status: 'OPEN',
         notes: 'Initial investigation for structuring.',
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       },
       {
         caseCode: 'CAS-1002',
         createdByEmail: 'admin@bank.com',
         assignedToUserCode: 'OFF-002',
+        assignedToEmail: 'officer2@bank.com',
+
         status: 'UNDER_REVIEW',
         notes: 'Checking international wire patterns.',
-        createdAt: new Date().toISOString()
-      }
+        createdAt: new Date().toISOString(),
+      },
+      {
+        caseCode: 'CAS-1003',
+        createdByEmail: 'admin@bank.com',
+        assignedToUserCode: 'OFF-001',
+        assignedToEmail: 'officer1@bank.com',
+        status: 'CLOSED',
+        notes: 'Verified false positive.',
+        createdAt: new Date().toISOString(),
+      },
     ];
     this.cases.set(mockCases);
-    this.totalElements.set(2);
+    this.totalElements.set(3);
     this.totalPages.set(1);
   }
 
@@ -104,14 +113,14 @@ export class CaseManagementComponent implements OnInit {
 
   prevPage(): void {
     if (this.currentPage() > 0) {
-      this.currentPage.update(p => p - 1);
+      this.currentPage.update((p) => p - 1);
       this.loadCases();
     }
   }
 
   nextPage(): void {
     if (this.currentPage() < this.totalPages() - 1) {
-      this.currentPage.update(p => p + 1);
+      this.currentPage.update((p) => p + 1);
       this.loadCases();
     }
   }

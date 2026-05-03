@@ -34,13 +34,14 @@ export class TenantDetailComponent implements OnInit {
   filteredJobHistory = computed(() => {
     const history = this.tenantDetail()?.jobHistory || [];
     const query = this.jobSearchQuery().toLowerCase();
-    
+
     if (!query) return history;
-    
-    return history.filter(job => 
-      job.jobType.toLowerCase().includes(query) || 
-      job.status.toLowerCase().includes(query) ||
-      job.jobId.toLowerCase().includes(query)
+
+    return history.filter(
+      (job) =>
+        job.jobType.toLowerCase().includes(query) ||
+        job.status.toLowerCase().includes(query) ||
+        job.jobId.toLowerCase().includes(query),
     );
   });
 
@@ -48,9 +49,9 @@ export class TenantDetailComponent implements OnInit {
     const history = this.tenantDetail()?.jobHistory || [];
     return {
       total: history.length,
-      completed: history.filter(j => j.status === 'SUCCESS' || j.status === 'COMPLETED').length,
-      failed: history.filter(j => j.status === 'FAILED' || j.status === 'FAILURE').length,
-      pending: history.filter(j => j.status === 'PENDING' || j.status === 'RUNNING').length
+      completed: history.filter((j) => j.status === 'SUCCESS' || j.status === 'COMPLETED').length,
+      failed: history.filter((j) => j.status === 'FAILED' || j.status === 'FAILURE').length,
+      pending: history.filter((j) => j.status === 'PENDING' || j.status === 'RUNNING').length,
     };
   });
 
@@ -79,7 +80,7 @@ export class TenantDetailComponent implements OnInit {
         console.error('Error loading tenant detail', err);
         this.error.set('Failed to connect to the server');
         this.isLoading.set(false);
-      }
+      },
     });
   }
 
@@ -101,10 +102,12 @@ export class TenantDetailComponent implements OnInit {
     this.scenarioService.getAllScenarios().subscribe({
       next: (scenarios) => {
         // Filter out scenarios that are already subscribed
-        const subscribedCodes = new Set(this.tenantDetail()?.subscribedScenarios?.map(s => s.scenarioCode) || []);
-        this.availableScenarios.set(scenarios.filter(s => !subscribedCodes.has(s.scenarioCode)));
+        const subscribedCodes = new Set(
+          this.tenantDetail()?.subscribedScenarios?.map((s) => s.scenarioCode) || [],
+        );
+        this.availableScenarios.set(scenarios.filter((s) => !subscribedCodes.has(s.scenarioCode)));
       },
-      error: (err) => console.error('Error loading available scenarios', err)
+      error: (err) => console.error('Error loading available scenarios', err),
     });
   }
 
@@ -122,9 +125,7 @@ export class TenantDetailComponent implements OnInit {
       error: (err) => {
         console.error('Error assigning scenario', err);
         this.isAssigning.set(false);
-      }
+      },
     });
   }
 }
-
-

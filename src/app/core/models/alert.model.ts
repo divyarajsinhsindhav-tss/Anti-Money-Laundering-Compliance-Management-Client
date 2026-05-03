@@ -1,11 +1,4 @@
-export type AlertStatus =
-  | 'OPEN'
-  | 'UNDER_REVIEW'
-  | 'ESCALATED'
-  | 'CLOSED_TRUE_POSITIVE'
-  | 'CLOSED_FALSE_POSITIVE'
-  | 'CLOSED_INCONCLUSIVE'
-  | 'IN_CASE';
+export type AlertStatus = 'OPEN' | 'IN_CASE' | 'REVIEWED' | 'ESCALATED' | 'CLOSED';
 
 export interface Alert {
   alertCode: string;

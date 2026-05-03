@@ -16,14 +16,14 @@ export interface UserResponse {
 import { API_CONFIG } from '../config/api.config';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TenantUserService {
   private http = inject(HttpClient);
   private readonly baseUrl = `${API_CONFIG.BASE_URL}/tenant-users`;
 
   getComplianceOfficers(): Observable<ApiResponse<UserResponse[]>> {
-    return this.http.get<ApiResponse<UserResponse[]>>(`${this.baseUrl}/complience-officers`);
+    return this.http.get<ApiResponse<UserResponse[]>>(`${this.baseUrl}/compliance-officers`);
   }
 
   registerComplianceOfficer(request: any): Observable<ApiResponse<UserResponse>> {

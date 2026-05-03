@@ -10,7 +10,7 @@ import { AuthService } from '@core/services/auth.service';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './scenario.component.html',
-  styleUrl: './scenario.component.css'
+  styleUrl: './scenario.component.css',
 })
 export class ScenarioComponent implements OnInit, OnDestroy {
   private scenarioService = inject(ScenarioService);
@@ -28,9 +28,10 @@ export class ScenarioComponent implements OnInit, OnDestroy {
 
   filteredScenarios = computed(() => {
     const query = this.searchQuery().toLowerCase();
-    return this.scenarios().filter(s =>
-      s.scenarioName.toLowerCase().includes(query) ||
-      s.scenarioCode.toLowerCase().includes(query)
+    return this.scenarios().filter(
+      (s) =>
+        s.scenarioName.toLowerCase().includes(query) ||
+        s.scenarioCode.toLowerCase().includes(query),
     );
   });
 
@@ -50,7 +51,7 @@ export class ScenarioComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.error('Failed to load scenarios', err);
         this.isLoading.set(false);
-      }
+      },
     });
   }
 

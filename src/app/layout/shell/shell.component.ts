@@ -13,7 +13,7 @@ import { AuthService } from '../../core/services/auth.service';
   standalone: true,
   imports: [CommonModule, RouterOutlet, SidebarComponent, NavbarComponent],
   templateUrl: './shell.component.html',
-  styleUrl: './shell.component.css'
+  styleUrl: './shell.component.css',
 })
 export class ShellComponent implements OnInit {
   private tenantService = inject(TenantService);
@@ -29,7 +29,7 @@ export class ShellComponent implements OnInit {
       this.authService.fetchCurrentUser().subscribe();
     }
 
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const tenant = params['tenant'];
       if (tenant && tenant !== 'sys' && tenant !== 'not-found') {
         this.checkTenant(tenant);
@@ -48,11 +48,11 @@ export class ShellComponent implements OnInit {
       error: () => {
         // If API fails (like 403 or 404), treat as unavailable for safety
         this.router.navigate(['/not-found']);
-      }
+      },
     });
   }
 
   toggleSidebar() {
-    this.isSidebarOpen.update(open => !open);
+    this.isSidebarOpen.update((open) => !open);
   }
 }

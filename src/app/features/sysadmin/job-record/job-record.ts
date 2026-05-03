@@ -34,7 +34,7 @@ export class JobRecordComponent implements OnInit {
     { label: 'Pending', value: 'PENDING' },
     { label: 'Running', value: 'RUNNING' },
     { label: 'Completed', value: 'COMPLETED' },
-    { label: 'Failed', value: 'FAILED' }
+    { label: 'Failed', value: 'FAILED' },
   ];
 
   ngOnInit() {
@@ -48,30 +48,32 @@ export class JobRecordComponent implements OnInit {
         if (response.data) {
           this.tenants.set(response.data);
         }
-      }
+      },
     });
   }
 
   fetchJobRecords() {
     this.isLoading.set(true);
-    this.adminService.getJobRecords(
-      this.currentPage(),
-      this.pageSize(),
-      this.selectedStatus() || undefined,
-      this.selectedTenant() || undefined
-    ).subscribe({
-      next: (response) => {
-        if (response.data) {
-          this.jobRecords.set(response.data.content);
-          this.totalElements.set(response.data.totalElements);
-          this.totalPages.set(response.data.totalPages);
-        }
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.isLoading.set(false);
-      }
-    });
+    this.adminService
+      .getJobRecords(
+        this.currentPage(),
+        this.pageSize(),
+        this.selectedStatus() || undefined,
+        this.selectedTenant() || undefined,
+      )
+      .subscribe({
+        next: (response) => {
+          if (response.data) {
+            this.jobRecords.set(response.data.content);
+            this.totalElements.set(response.data.totalElements);
+            this.totalPages.set(response.data.totalPages);
+          }
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.isLoading.set(false);
+        },
+      });
   }
 
   onStatusChange(status: string) {
@@ -88,14 +90,14 @@ export class JobRecordComponent implements OnInit {
 
   nextPage() {
     if (this.currentPage() < this.totalPages() - 1) {
-      this.currentPage.update(p => p + 1);
+      this.currentPage.update((p) => p + 1);
       this.fetchJobRecords();
     }
   }
 
   prevPage() {
     if (this.currentPage() > 0) {
-      this.currentPage.update(p => p - 1);
+      this.currentPage.update((p) => p - 1);
       this.fetchJobRecords();
     }
   }
@@ -108,11 +110,17 @@ export class JobRecordComponent implements OnInit {
 
   getStatusColor(status: string): string {
     switch (status) {
-      case 'COMPLETED': return 'success';
-      case 'RUNNING': return 'primary';
-      case 'PENDING': return 'warning';
-      case 'FAILED': return 'danger';
-      default: return 'secondary';
+      case 'COMPLETED':
+        return 'bg-success/5 text-success border-success/30';
+      case 'RUNNING':
+        return 'bg-primary/5 text-primary border-primary/30';
+      case 'PENDING':
+      case 'OPEN':
+        return 'bg-warning/5 text-warning border-warning/30';
+      case 'FAILED':
+        return 'bg-danger/5 text-danger border-danger/30';
+      default:
+        return 'secondary';
     }
   }
 }

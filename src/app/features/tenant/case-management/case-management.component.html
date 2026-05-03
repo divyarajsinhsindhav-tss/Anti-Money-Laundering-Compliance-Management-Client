@@ -3,7 +3,9 @@
   <div class="flex justify-between items-center mb-8 border-b border-secondary/10 pb-6">
     <div>
       <h1 class="text-2xl font-semibold text-surface-dark">Case Management</h1>
-      <p class="text-secondary text-sm">Manage and track advanced AML investigations and SAR filings.</p>
+      <p class="text-gray-800 text-sm">
+        Manage and track advanced AML investigations and SAR filings.
+      </p>
     </div>
   </div>
 
@@ -12,20 +14,34 @@
     <div class="flex flex-wrap gap-4">
       <!-- Status Filter -->
       <div class="w-full md:w-64">
-        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Filter by Status</label>
+        <label class="block text-sm font-bold text-gray-800 mb-2">Filter by Status</label>
         <div class="relative group">
-          <select 
-            [ngModel]="selectedStatus()" 
+          <select
+            [ngModel]="selectedStatus()"
             (ngModelChange)="onStatusChange($event)"
             class="appearance-none w-full bg-white border border-secondary/20 focus:border-primary px-4 py-2 text-sm text-surface-dark outline-none transition-all cursor-pointer hover:bg-surface-light shadow-sm"
-            style="border-radius: 0;"
+            style="border-radius: 0"
           >
             @for (status of statuses; track status.value) {
               <option [value]="status.value">{{ status.label }}</option>
             }
           </select>
-          <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          <div
+            class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-800/30 group-hover:text-primary transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
           </div>
         </div>
       </div>
@@ -35,53 +51,93 @@
     <div class="flex justify-between items-center bg-gray-50 p-4 border border-secondary/10">
       <div class="flex items-center gap-6">
         <div class="flex items-center gap-3 border-r border-secondary/10 pr-6">
-          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Show</span>
+          <span class="text-sm font-bold text-gray-800">Show</span>
           <div class="relative group">
-            <select 
-              [ngModel]="pageSize()" 
+            <select
+              [ngModel]="pageSize()"
               (ngModelChange)="onPageSizeChange($event)"
               class="appearance-none bg-white border border-secondary/20 pl-3 pr-8 py-1.5 text-sm font-medium text-gray-800 outline-none focus:border-primary transition-all cursor-pointer hover:bg-white min-w-[70px]"
-              style="border-radius: 0;"
+              style="border-radius: 0"
             >
               <option [value]="5">5</option>
               <option [value]="10">10</option>
               <option [value]="25">25</option>
               <option [value]="50">50</option>
             </select>
-            <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            <div
+              class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-800/30 group-hover:text-primary transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
             </div>
           </div>
-          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Entries</span>
+          <span class="text-sm font-bold text-gray-800">Entries</span>
         </div>
-        <div class="text-xs text-gray-500 font-medium">
+        <div class="text-sm text-gray-800 font-medium">
           Showing {{ cases().length }} of {{ totalElements() }} records
         </div>
       </div>
 
       <!-- Pagination Controls -->
       <div class="flex items-center gap-4">
-         <span class="text-xs font-bold text-gray-600 uppercase tracking-wider">
-           PAGE {{ currentPage() + 1 }} OF {{ totalPages() || 1 }}
-         </span>
-         <div class="flex gap-1">
-           <button 
-             (click)="prevPage()" 
-             [disabled]="currentPage() === 0 || isLoading()"
-             class="p-2 border border-secondary/20 hover:border-primary disabled:opacity-30 transition-all bg-white hover:bg-gray-100 group"
-             style="border-radius: 0;"
-           >
-             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 group-hover:text-primary"><path d="m15 18-6-6 6-6"/></svg>
-           </button>
-           <button 
-             (click)="nextPage()" 
-             [disabled]="currentPage() >= totalPages() - 1 || isLoading()"
-             class="p-2 border border-secondary/20 hover:border-primary disabled:opacity-30 transition-all bg-white hover:bg-gray-100 group"
-             style="border-radius: 0;"
-           >
-             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 group-hover:text-primary"><path d="m9 18 6-6-6-6"/></svg>
-           </button>
-         </div>
+        <span class="text-sm font-bold text-gray-800">
+          PAGE {{ currentPage() + 1 }} OF {{ totalPages() || 1 }}
+        </span>
+        <div class="flex gap-1">
+          <button
+            (click)="prevPage()"
+            [disabled]="currentPage() === 0 || isLoading()"
+            class="p-2 border border-secondary/20 hover:border-primary disabled:opacity-30 transition-all bg-white hover:bg-gray-100 group"
+            style="border-radius: 0"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-gray-500 group-hover:text-primary"
+            >
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
+          <button
+            (click)="nextPage()"
+            [disabled]="currentPage() >= totalPages() - 1 || isLoading()"
+            class="p-2 border border-secondary/20 hover:border-primary disabled:opacity-30 transition-all bg-white hover:bg-gray-100 group"
+            style="border-radius: 0"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-gray-500 group-hover:text-primary"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -92,12 +148,12 @@
       <table class="w-full text-left border-collapse">
         <thead class="bg-gray-50 shadow-sm border-b border-secondary/10">
           <tr>
-            <th class="py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Case ID</th>
-            <th class="py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Created By</th>
-            <th class="py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Assigned To</th>
-            <th class="py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
-            <th class="py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Date Created</th>
-            <th class="py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+            <th class="py-4 px-6 text-sm font-bold text-gray-800">Case ID</th>
+            <th class="py-4 px-6 text-sm font-bold text-gray-800">Created By</th>
+            <th class="py-4 px-6 text-sm font-bold text-gray-800">Assigned To</th>
+            <th class="py-4 px-6 text-sm font-bold text-gray-800">Status</th>
+            <th class="py-4 px-6 text-sm font-bold text-gray-800 text-right">Date Created</th>
+            <th class="py-4 px-6 text-sm font-bold text-gray-800 text-right">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-secondary/5">
@@ -113,43 +169,80 @@
             @for (caseItem of cases(); track caseItem.caseCode) {
               <tr class="hover:bg-gray-50 transition-colors group">
                 <td class="py-4 px-6">
-                  <span class="text-xs text-gray-400 font-mono bg-gray-50 px-2 py-0.5 border border-secondary/10">
+                  <span
+                    class="text-sm text-gray-800 font-mono bg-gray-50 px-2 py-0.5 border border-secondary/10"
+                  >
                     {{ caseItem.caseCode }}
                   </span>
                 </td>
                 <td class="py-4 px-6">
-                  <span class="text-sm font-medium text-surface-dark">{{ caseItem.createdByEmail }}</span>
+                  <span class="text-sm font-medium text-surface-dark">{{
+                    caseItem.createdByEmail
+                  }}</span>
                 </td>
                 <td class="py-4 px-6">
-                  <span class="text-sm text-secondary font-medium">{{ caseItem.assignedToUserCode }}</span>
+                  <span class="text-sm text-gray-800 font-medium">{{
+                    caseItem.assignedToUserCode
+                  }}</span>
                 </td>
                 <td class="py-4 px-6">
-                  <span 
-                    class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide border"
-                    [class.border-success/30]="caseItem.status.startsWith('CLOSED')"
-                    [class.text-success]="caseItem.status.startsWith('CLOSED')"
-                    [class.bg-success/5]="caseItem.status.startsWith('CLOSED')"
-                    [class.border-primary/30]="caseItem.status === 'UNDER_REVIEW'"
-                    [class.text-primary]="caseItem.status === 'UNDER_REVIEW'"
-                    [class.bg-primary/5]="caseItem.status === 'UNDER_REVIEW'"
-                    [class.border-warning/30]="caseItem.status === 'OPEN'"
-                    [class.text-warning]="caseItem.status === 'OPEN'"
-                    [class.bg-warning/5]="caseItem.status === 'OPEN'"
-                    [class.border-danger/30]="caseItem.status === 'ESCALATED'"
-                    [class.text-danger]="caseItem.status === 'ESCALATED'"
-                    [class.bg-danger/5]="caseItem.status === 'ESCALATED'"
-                    style="border-radius: 0;"
+                  <span
+                    class="inline-block px-2 py-0.5 text-sm font-bold border"
+                    [class.border-danger/40]="
+                      $any(caseItem.status)?.toUpperCase()?.trim().startsWith('CLOSED')
+                    "
+                    [class.text-danger]="
+                      $any(caseItem.status)?.toUpperCase()?.trim().startsWith('CLOSED')
+                    "
+                    [class.bg-danger-light]="
+                      $any(caseItem.status)?.toUpperCase()?.trim().startsWith('CLOSED')
+                    "
+                    [class.border-primary/40]="
+                      $any(caseItem.status)?.toUpperCase()?.trim() === 'UNDER_REVIEW'
+                    "
+                    [class.text-primary]="
+                      $any(caseItem.status)?.toUpperCase()?.trim() === 'UNDER_REVIEW'
+                    "
+                    [class.bg-primary-lighter]="
+                      $any(caseItem.status)?.toUpperCase()?.trim() === 'UNDER_REVIEW'
+                    "
+                    [class.border-warning]="
+                      $any(caseItem.status)?.toUpperCase()?.trim()?.includes('OPEN')
+                    "
+                    [class.text-warning]="$any(caseItem.status)?.toUpperCase()?.trim()?.includes('OPEN')"
+                    [class.bg-warning-light]="$any(caseItem.status)?.toUpperCase()?.trim()?.includes('OPEN')"
+                    [class.border-primary/40]="
+                      $any(caseItem.status)?.toUpperCase()?.trim() === 'REVIEWED'
+                    "
+                    [class.text-primary]="
+                      $any(caseItem.status)?.toUpperCase()?.trim() === 'REVIEWED'
+                    "
+                    [class.bg-primary-lighter]="
+                      $any(caseItem.status)?.toUpperCase()?.trim() === 'REVIEWED'
+                    "
+                    [class.border-warning]="
+                      $any(caseItem.status)?.toUpperCase()?.trim() === 'ESCALATED'
+                    "
+                    [class.text-warning]="
+                      $any(caseItem.status)?.toUpperCase()?.trim() === 'ESCALATED'
+                    "
+                    [class.bg-warning-light]="
+                      $any(caseItem.status)?.toUpperCase()?.trim() === 'ESCALATED'
+                    "
+                    style="border-radius: 0"
                   >
                     {{ caseItem.status.replace('_', ' ') }}
                   </span>
                 </td>
                 <td class="py-4 px-6 text-right">
-                  <span class="text-sm text-secondary">{{ caseItem.createdAt | date:'MMM d, yyyy' }}</span>
+                  <span class="text-sm text-gray-800">{{
+                    caseItem.createdAt | date: 'MMM d, yyyy'
+                  }}</span>
                 </td>
                 <td class="py-4 px-6 text-right">
-                  <button 
+                  <button
                     (click)="viewDetail(caseItem.caseCode)"
-                    class="text-primary hover:text-primary-dark text-xs font-bold uppercase tracking-wider transition-colors border-none bg-transparent cursor-pointer"
+                    class="text-primary hover:text-primary-dark text-sm font-bold transition-colors border-none bg-transparent cursor-pointer"
                   >
                     View Details
                   </button>
@@ -157,7 +250,7 @@
               </tr>
             } @empty {
               <tr>
-                <td colspan="6" class="py-12 text-center text-gray-400 italic text-sm">
+                <td colspan="6" class="py-12 text-center text-gray-800 italic text-sm">
                   No cases found.
                 </td>
               </tr>

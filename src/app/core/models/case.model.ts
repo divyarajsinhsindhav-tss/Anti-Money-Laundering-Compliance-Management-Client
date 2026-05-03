@@ -8,13 +8,20 @@ export interface ApiResponse<T> {
   data: T;
 }
 
-export type CaseStatus = 'OPEN' | 'UNDER_REVIEW' | 'ESCALATED' | 'CLOSED_SAR_FILED' | 'CLOSED_NO_ACTION' | 'CLOSED_INCONCLUSIVE';
+export type CaseStatus = 'OPEN' | 'UNDER_REVIEW' | 'ESCALATED' | 'CLOSED';
+
+export interface UpdateCaseStatusRequest {
+  caseStatus: CaseStatus;
+  reason: string;
+}
 
 export interface Case {
   caseCode: string;
   createdByEmail: string;
   assignedToUserCode: string;
+  assignedToEmail: string;
   status: CaseStatus;
+
   notes: string;
   createdAt: string;
   closedAt?: string;

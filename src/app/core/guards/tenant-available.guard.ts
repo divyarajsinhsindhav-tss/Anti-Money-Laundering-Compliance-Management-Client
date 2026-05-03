@@ -18,7 +18,7 @@ export const tenantAvailableGuard: CanActivateFn = (route, state) => {
   console.log(`Checking availability for tenant: ${tenantCode}`);
 
   return tenantService.checkTenantAvailable(tenantCode).pipe(
-    map(response => {
+    map((response) => {
       console.log('Tenant check response:', response);
       const data = response?.data;
       const isAvailable = data?.available ?? data?.isAvailable ?? false;
@@ -33,6 +33,6 @@ export const tenantAvailableGuard: CanActivateFn = (route, state) => {
     catchError((error) => {
       console.error('Error checking tenant availability:', error);
       return of(router.parseUrl('/not-found'));
-    })
+    }),
   );
 };

@@ -1,19 +1,46 @@
 .active-link {
-    background-color: rgba(59, 130, 246, 0.1) !important;
-    color: #2563eb !important;
+  background-color: rgba(59, 130, 246, 0.1) !important;
+  color: #2563eb !important;
 }
 .active-link .indicator {
-    transform: scaleY(1) !important;
+  transform: scaleY(1) !important;
 }
 .active-link span {
-    color: #2563eb !important;
+  color: #2563eb !important;
 }
-.custom-scrollbar::-webkit-scrollbar { width: 4px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
 
-.animate-in { animation: 0.2s ease-out forwards; }
-@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slide-in-from-left-4 { from { transform: translateX(-1rem); } to { transform: translateX(0); } }
-.fade-in { animation-name: fade-in; }
-.slide-in-from-left-4 { animation-name: slide-in-from-left-4; }
+.animate-in {
+  animation: 0.2s ease-out forwards;
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slide-in-from-left-4 {
+  from {
+    transform: translateX(-1rem);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.fade-in {
+  animation-name: fade-in;
+}
+.slide-in-from-left-4 {
+  animation-name: slide-in-from-left-4;
+}

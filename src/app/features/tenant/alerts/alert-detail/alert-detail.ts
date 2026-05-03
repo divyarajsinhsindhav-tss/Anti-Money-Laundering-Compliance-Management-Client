@@ -3,7 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../../../core/services/alert.service';
+import { AuthService } from '../../../../core/services/auth.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { AlertDetail, AlertStatus } from '../../../../core/models/alert.model';
+import { computed } from '@angular/core';
 
 @Component({
   selector: 'app-alert-detail',
@@ -16,23 +19,27 @@ export class AlertDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private alertService = inject(AlertService);
+  private authService = inject(AuthService);
+  private toastService = inject(ToastService);
 
   alertId = signal<string | null>(null);
   alertDetail = signal<AlertDetail | null>(null);
   isLoading = signal<boolean>(false);
-  
+
   // Investigation Form
   newStatus = signal<AlertStatus>('OPEN');
   reason = signal<string>('');
   isUpdating = signal<boolean>(false);
 
+  canUpdate = computed(() => {
+    const user = this.authService.user();
+    const isNotAdmin = user?.role !== 'BANK_ADMIN' && user?.role !== 'ROLE_BANK_ADMIN';
+    return isNotAdmin && this.alertDetail()?.alert.alertStatus !== 'OPEN';
+  });
+
   statuses = [
-    { label: 'Open', value: 'OPEN' },
-    { label: 'Under Review', value: 'UNDER_REVIEW' },
-    { label: 'Escalated', value: 'ESCALATED' },
-    { label: 'Closed True Positive', value: 'CLOSED_TRUE_POSITIVE' },
-    { label: 'Closed False Positive', value: 'CLOSED_FALSE_POSITIVE' },
-    { label: 'Closed Inconclusive', value: 'CLOSED_INCONCLUSIVE' }
+    { label: 'Reviewed', value: 'REVIEWED' },
+    { label: 'Closed', value: 'CLOSED' },
   ];
 
   ngOnInit(): void {
@@ -56,7 +63,7 @@ export class AlertDetailComponent implements OnInit {
       error: () => {
         this.isLoading.set(false);
         this.setMockDetail(id);
-      }
+      },
     });
   }
 
@@ -68,8 +75,8 @@ export class AlertDetailComponent implements OnInit {
         customerName: 'Aman Sharma',
         customerCode: 'CUST-8829',
         customerIncome: 1250000,
-        alertStatus: 'OPEN',
-        createdAt: new Date().toISOString()
+        alertStatus: 'IN_CASE',
+        createdAt: new Date().toISOString(),
       },
       financialTransactionResponsesList: [
         {
@@ -81,7 +88,7 @@ export class AlertDetailComponent implements OnInit {
           counterpartyAccountNo: 'N/A',
           counterpartyBankIfsc: 'N/A',
           txnTimestamp: new Date().toISOString(),
-          countryCode: 'IN'
+          countryCode: 'IN',
         },
         {
           txnNo: 'TXN-902',
@@ -92,8 +99,8 @@ export class AlertDetailComponent implements OnInit {
           counterpartyAccountNo: 'N/A',
           counterpartyBankIfsc: 'N/A',
           txnTimestamp: new Date().toISOString(),
-          countryCode: 'IN'
-        }
+          countryCode: 'IN',
+        },
       ],
       customerResponsesList: [
         {
@@ -101,9 +108,9 @@ export class AlertDetailComponent implements OnInit {
           customerName: 'Aman Sharma',
           customerEmail: 'aman@example.com',
           customerPhone: '9876543210',
-          customerIncome: 1250000
-        }
-      ]
+          customerIncome: 1250000,
+        },
+      ],
     };
     this.alertDetail.set(mock);
     this.newStatus.set(mock.alert.alertStatus);
@@ -111,27 +118,30 @@ export class AlertDetailComponent implements OnInit {
 
   updateStatus(): void {
     if (!this.alertId()) return;
-    
+
     this.isUpdating.set(true);
-    this.alertService.updateAlertStatus(this.alertId()!, this.newStatus(), this.reason()).subscribe({
-      next: (response) => {
-        if (response.data) {
-          this.loadAlertDetail(this.alertId()!);
-          this.reason.set('');
-        }
-        this.isUpdating.set(false);
-      },
-      error: () => {
-        this.isUpdating.set(false);
-        // Mock update
-        if (this.alertDetail()) {
-          const updated = { ...this.alertDetail()! };
-          updated.alert.alertStatus = this.newStatus();
-          this.alertDetail.set(updated);
-          this.reason.set('');
-        }
-      }
-    });
+    this.alertService
+      .updateAlertStatus(this.alertId()!, this.newStatus(), this.reason())
+      .subscribe({
+        next: (response) => {
+          if (response.data) {
+            this.loadAlertDetail(this.alertId()!);
+            this.reason.set('');
+            this.toastService.success('Alert status updated successfully');
+          }
+          this.isUpdating.set(false);
+        },
+        error: () => {
+          this.isUpdating.set(false);
+          // Mock update
+          if (this.alertDetail()) {
+            const updated = { ...this.alertDetail()! };
+            updated.alert.alertStatus = this.newStatus();
+            this.alertDetail.set(updated);
+            this.reason.set('');
+          }
+        },
+      });
   }
 
   goBack(): void {

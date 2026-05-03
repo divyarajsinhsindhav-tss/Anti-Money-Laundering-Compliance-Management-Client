@@ -6,7 +6,7 @@ import { CustomerError, CustomerJob, CustomerStats } from '../models/customer.mo
 import { API_CONFIG } from '../config/api.config';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CustomerService {
   private http = inject(HttpClient);
@@ -23,13 +23,19 @@ export class CustomerService {
   uploadCustomerFile(file: File): Observable<string> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post(`${API_CONFIG.BASE_URL}/file/uploadCustomer`, formData, { responseType: 'text' });
+    return this.http.post(`${API_CONFIG.BASE_URL}/file/uploadCustomer`, formData, {
+      responseType: 'text',
+    });
   }
 
-  getCustomerErrors(page: number = 0, size: number = 10, jobId?: string): Observable<ApiResponse<any>> {
+  getCustomerErrors(
+    page: number = 0,
+    size: number = 10,
+    jobId?: string,
+  ): Observable<ApiResponse<any>> {
     const params: any = { page: page.toString(), size: size.toString() };
     if (jobId) params.jobId = jobId;
-    
+
     return this.http.get<ApiResponse<any>>(`${this.baseUrl}/customer-errors`, { params });
   }
 }

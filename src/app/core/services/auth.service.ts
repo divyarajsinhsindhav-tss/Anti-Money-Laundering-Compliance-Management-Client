@@ -7,7 +7,7 @@ import { LoginResponse, User, ApiResponse } from '@core/models/auth.model';
 import { API_CONFIG } from '../config/api.config';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
@@ -28,9 +28,7 @@ export class AuthService {
     localStorage.removeItem('role');
 
     // Sync tenant from URL on navigation
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
+    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
       this._tenantId.set(this.getTenantFromUrl());
     });
 
@@ -44,15 +42,21 @@ export class AuthService {
       try {
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split('')
+            .map((c) => {
+              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            })
+            .join(''),
+        );
 
         const payload = JSON.parse(jsonPayload);
         this._user.set({
           email: payload.sub || payload.email || 'user@system',
-          role: payload.role || (Array.isArray(payload.roles) ? payload.roles[0] : payload.roles) || '',
-          tenantId: payload.tenantId || this.getTenantFromUrl()
+          role:
+            payload.role || (Array.isArray(payload.roles) ? payload.roles[0] : payload.roles) || '',
+          tenantId: payload.tenantId || this.getTenantFromUrl(),
         });
       } catch (e) {
         console.warn('Failed to optimistically load user from token', e);
@@ -62,11 +66,11 @@ export class AuthService {
 
   private getTenantFromUrl(): string {
     const path = window.location.pathname;
-    const segments = path.split('/').filter(s => s);
+    const segments = path.split('/').filter((s) => s);
     if (segments.length > 0) {
       const first = segments[0];
       // Skip 'sys' and 'not-found' to treat them as public context
-      return (first === 'sys' || first === 'not-found') ? 'public' : first;
+      return first === 'sys' || first === 'not-found' ? 'public' : first;
     }
     return 'public';
   }
@@ -81,20 +85,22 @@ export class AuthService {
     localStorage.removeItem('user');
     localStorage.removeItem('role');
 
-    return this.http.post<LoginResponse>(`${API_CONFIG.BASE_URL}/auth/login`, credentials, { headers }).pipe(
-      tap(response => {
-        const data = response.data;
-        localStorage.setItem(this.TOKEN_KEY, data.accessToken);
-        this._token.set(data.accessToken);
+    return this.http
+      .post<LoginResponse>(`${API_CONFIG.BASE_URL}/auth/login`, credentials, { headers })
+      .pipe(
+        tap((response) => {
+          const data = response.data;
+          localStorage.setItem(this.TOKEN_KEY, data.accessToken);
+          this._token.set(data.accessToken);
 
-        // Immediately set user role and tenant in local store context
-        this._user.set({
-          role: data.role,
-          email: credentials.email || 'user@system',
-          tenantId: tenantId || 'public'
-        });
-      })
-    );
+          // Immediately set user role and tenant in local store context
+          this._user.set({
+            role: data.role,
+            email: credentials.email || 'user@system',
+            tenantId: tenantId || 'public',
+          });
+        }),
+      );
   }
 
   fetchCurrentUser(): Observable<User | null> {
@@ -106,20 +112,22 @@ export class AuthService {
       return this.currentUserRequest$;
     }
 
-    this.currentUserRequest$ = this.http.get<ApiResponse<User>>(`${API_CONFIG.BASE_URL}/auth/me`).pipe(
-      tap(response => {
-        this._user.set(response.data);
-      }),
-      map(response => response.data),
-      catchError(() => {
-        this.logout();
-        return of(null);
-      }),
-      finalize(() => {
-        this.currentUserRequest$ = null;
-      }),
-      shareReplay(1)
-    );
+    this.currentUserRequest$ = this.http
+      .get<ApiResponse<User>>(`${API_CONFIG.BASE_URL}/auth/me`)
+      .pipe(
+        tap((response) => {
+          this._user.set(response.data);
+        }),
+        map((response) => response.data),
+        catchError(() => {
+          this.logout();
+          return of(null);
+        }),
+        finalize(() => {
+          this.currentUserRequest$ = null;
+        }),
+        shareReplay(1),
+      );
 
     return this.currentUserRequest$;
   }
@@ -147,7 +155,10 @@ export class AuthService {
     }
   }
 
-  changePassword(request: { oldPassword: string; newPassword: string }): Observable<ApiResponse<any>> {
+  changePassword(request: {
+    oldPassword: string;
+    newPassword: string;
+  }): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<any>>(`${API_CONFIG.BASE_URL}/auth/change-password`, request);
   }
 

@@ -1,0 +1,156 @@
+<div class="p-8 max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+  <!-- Page Header -->
+  <div class="flex justify-between items-end mb-10 border-b border-secondary/10 pb-8">
+    <div class="flex items-center gap-4">
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <h1 class="text-3xl font-bold text-surface-dark tracking-tight">
+            Detection History
+          </h1>
+        </div>
+        <p class="text-secondary text-sm">
+          Complete execution logs of automated detection cycles and rule engine jobs.
+        </p>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+       <span class="text-sm font-bold text-gray-800">{{ totalElements() }} Total Cycles</span>
+    </div>
+  </div>
+
+  <!-- Toolbar: Pagination & Info -->
+  <div class="flex justify-between items-center bg-gray-50/80 p-4 border-x border-t border-secondary/10 shadow-sm">
+    <div class="flex items-center gap-6">
+      <div class="flex items-center gap-3 border-r border-secondary/10 pr-6">
+        <span class="text-sm font-bold text-gray-800">Show</span>
+        <div class="relative group">
+          <select
+            [ngModel]="size()"
+            (ngModelChange)="onPageSizeChange($event)"
+            class="appearance-none bg-white border border-secondary/20 pl-3 pr-8 py-1.5 text-sm font-bold text-gray-800 outline-none focus:border-primary transition-all cursor-pointer hover:bg-white min-w-[70px]"
+            style="border-radius: 0"
+          >
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+            <option [value]="15">15</option>
+            <option [value]="25">25</option>
+            <option [value]="50">50</option>
+          </select>
+          <div
+            class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </div>
+        </div>
+        <span class="text-sm font-bold text-gray-800">Entries</span>
+      </div>
+      <div class="text-sm text-gray-800 font-bold">
+        Showing {{ page() * size() + 1 }} - {{ (page() + 1) * size() > totalElements() ? totalElements() : (page() + 1) * size() }} of {{ totalElements() }} records
+      </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="flex items-center gap-4">
+      <span class="text-xs font-bold text-gray-800 uppercase tracking-widest">
+        Page {{ page() + 1 }} of {{ totalPages() }}
+      </span>
+      <div class="flex gap-1">
+        <button
+          (click)="prevPage()"
+          [disabled]="page() === 0 || isLoading()"
+          class="p-2 border border-secondary/20 hover:border-primary disabled:opacity-30 transition-all bg-white hover:bg-gray-50 group shadow-sm"
+          style="border-radius: 0"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 group-hover:text-primary">
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+        </button>
+        <button
+          (click)="nextPage()"
+          [disabled]="(page() + 1) * size() >= totalElements() || isLoading()"
+          class="p-2 border border-secondary/20 hover:border-primary disabled:opacity-30 transition-all bg-white hover:bg-gray-50 group shadow-sm"
+          style="border-radius: 0"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 group-hover:text-primary">
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Table -->
+  <div class="bg-white border border-secondary/10 shadow-sm overflow-hidden border-t-0">
+    <div
+      class="px-6 py-4 bg-gray-50/50 border-b border-secondary/10 flex justify-between items-center"
+    >
+      <h3 class="text-sm font-bold text-surface-dark tracking-[0.2em]">Execution Records</h3>
+    </div>
+
+    @if (isLoading()) {
+      <div class="p-32 flex flex-col items-center">
+        <div class="relative w-12 h-12 mb-6">
+          <div class="absolute inset-0 border-4 border-primary/30 rounded-none"></div>
+          <div
+            class="absolute inset-0 border-4 border-primary border-t-transparent animate-spin rounded-none"
+          ></div>
+        </div>
+        <span class="text-sm font-bold text-gray-800 animate-pulse"
+          >Loading History...</span
+        >
+      </div>
+    } @else {
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-gray-50/80 border-b border-secondary/10">
+              <th class="py-5 px-8 text-sm font-bold text-gray-800">Cycle ID</th>
+              <th class="py-5 px-8 text-sm font-bold text-gray-800">Job Type</th>
+              <th class="py-5 px-8 text-sm font-bold text-gray-800">Execution Status</th>
+              <th class="py-5 px-8 text-sm font-bold text-gray-800 text-right">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-secondary/5">
+            @for (job of jobs(); track job.jobId) {
+              <tr class="group hover:bg-surface-light/30 transition-all duration-300">
+                <td class="py-6 px-8">
+                  <span class="text-sm font-mono font-bold text-primary tracking-tight">{{ job.jobId }}</span>
+                </td>
+                <td class="py-6 px-8 text-sm font-bold text-gray-700">
+                  {{ job.jobType }}
+                </td>
+                <td class="py-6 px-8">
+                  <span
+                    class="inline-block px-3 py-1 text-xs font-bold border"
+                    [class]="getJobStatusColor(job.status)"
+                    style="border-radius: 0"
+                  >
+                    {{ job.status }}
+                  </span>
+                </td>
+                <td class="py-6 px-8 text-right">
+                  <span class="text-sm text-secondary font-bold italic">
+                    {{ job.createdAt | date: 'MMM d, y, HH:mm:ss' }}
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="py-24 text-center">
+                   <div class="flex flex-col items-center gap-4 opacity-20">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                      </svg>
+                      <span class="text-sm font-bold text-gray-800">No detection history records found</span>
+                   </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

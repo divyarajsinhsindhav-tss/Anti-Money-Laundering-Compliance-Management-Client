@@ -2,12 +2,18 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/case.model';
-import { Case, CaseDetail, CreateCaseRequest, CreateCaseResponse } from '../models/case.model';
+import {
+  Case,
+  CaseDetail,
+  CreateCaseRequest,
+  CreateCaseResponse,
+  UpdateCaseStatusRequest,
+} from '../models/case.model';
 
 import { API_CONFIG } from '../config/api.config';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CaseService {
   private http = inject(HttpClient);
@@ -27,5 +33,22 @@ export class CaseService {
 
   createCase(request: CreateCaseRequest): Observable<ApiResponse<CreateCaseResponse>> {
     return this.http.post<ApiResponse<CreateCaseResponse>>(this.baseUrl, request);
+  }
+
+  autoGenerateCases(): Observable<ApiResponse<Case[]>> {
+    return this.http.post<ApiResponse<Case[]>>(`${this.baseUrl}/auto-generate`, {});
+  }
+
+  assignCase(caseCode: string, assignedToUserCode: string): Observable<ApiResponse<Case>> {
+    return this.http.patch<ApiResponse<Case>>(`${this.baseUrl}/${caseCode}/assign`, null, {
+      params: { assignedToUserCode },
+    });
+  }
+
+  updateCaseStatus(
+    caseCode: string,
+    request: UpdateCaseStatusRequest,
+  ): Observable<ApiResponse<CaseDetail>> {
+    return this.http.patch<ApiResponse<CaseDetail>>(`${this.baseUrl}/${caseCode}/status`, request);
   }
 }

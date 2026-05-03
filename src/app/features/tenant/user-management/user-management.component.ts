@@ -2,16 +2,18 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TenantUserService, UserResponse } from '../../../core/services/tenant-user.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './user-management.component.html',
-  styleUrl: './user-management.component.css'
+  styleUrl: './user-management.component.css',
 })
 export class UserManagementComponent implements OnInit {
   private userService = inject(TenantUserService);
+  private toastService = inject(ToastService);
 
   officers = signal<UserResponse[]>([]);
   isLoading = signal<boolean>(false);
@@ -24,7 +26,7 @@ export class UserManagementComponent implements OnInit {
     lastName: '',
     email: '',
     password: '',
-    phoneNumber: ''
+    phoneNumber: '',
   };
 
   ngOnInit(): void {
@@ -44,15 +46,35 @@ export class UserManagementComponent implements OnInit {
         this.isLoading.set(false);
         // Mock data for development if backend fails
         this.officers.set([
-          { userCode: 'OFF-001', firstName: 'John', lastName: 'Doe', email: 'john@bank.com', role: 'COMPLIANCE_OFFICER', isActive: true },
-          { userCode: 'OFF-002', firstName: 'Jane', lastName: 'Smith', email: 'jane@bank.com', role: 'COMPLIANCE_OFFICER', isActive: true }
+          {
+            userCode: 'OFF-001',
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@bank.com',
+            role: 'COMPLIANCE_OFFICER',
+            isActive: true,
+          },
+          {
+            userCode: 'OFF-002',
+            firstName: 'Jane',
+            lastName: 'Smith',
+            email: 'jane@bank.com',
+            role: 'COMPLIANCE_OFFICER',
+            isActive: true,
+          },
         ]);
-      }
+      },
     });
   }
 
   saveOfficer(): void {
-    if (!this.newOfficer.firstName || !this.newOfficer.lastName || !this.newOfficer.email || !this.newOfficer.password) return;
+    if (
+      !this.newOfficer.firstName ||
+      !this.newOfficer.lastName ||
+      !this.newOfficer.email ||
+      !this.newOfficer.password
+    )
+      return;
 
     this.isSaving.set(true);
     this.userService.registerComplianceOfficer(this.newOfficer).subscribe({
@@ -60,6 +82,7 @@ export class UserManagementComponent implements OnInit {
         this.isSaving.set(false);
         this.showAddModal.set(false);
         this.resetForm();
+        this.toastService.success('Compliance officer registered successfully');
         this.loadOfficers();
       },
       error: () => {
@@ -67,7 +90,7 @@ export class UserManagementComponent implements OnInit {
         // Fallback for demo
         this.loadOfficers();
         this.showAddModal.set(false);
-      }
+      },
     });
   }
 
@@ -77,7 +100,7 @@ export class UserManagementComponent implements OnInit {
       lastName: '',
       email: '',
       password: '',
-      phoneNumber: ''
+      phoneNumber: '',
     };
   }
 }
