@@ -1,21 +1,17 @@
-<aside
-  [class.w-64]="isOpen()"
-  [class.w-20]="!isOpen()"
-  class="bg-surface border-r border-secondary-lighter h-screen transition-all duration-300 ease-in-out flex flex-col fixed left-0 top-0 z-40 shadow-[4px_0_24px_rgba(0,0,0,0.02)] overflow-hidden"
->
+<aside [class.w-64]="isOpen()" [class.w-20]="!isOpen()"
+  class="bg-surface border-r border-secondary-lighter h-screen transition-all duration-300 ease-in-out flex flex-col fixed left-0 top-0 z-40 shadow-[4px_0_24px_rgba(0,0,0,0.02)] overflow-hidden">
   <!-- Logo Section -->
   <div class="h-20 flex items-center px-6 shrink-0 overflow-hidden relative">
     <div class="flex items-center group cursor-pointer">
       <div
-        class="w-10 h-10 bg-gradient-to-br from-primary to-primary-dark rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 transform group-hover:rotate-6 transition-transform duration-300"
-      >
+        class="w-10 h-10 bg-gradient-to-br from-primary to-primary-dark rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 transform group-hover:rotate-6 transition-transform duration-300">
         <span class="text-white font-bold text-xl">A</span>
       </div>
       @if (isOpen()) {
-        <div class="ml-3 animate-in fade-in slide-in-from-left-4 duration-500">
-          <h1 class="font-bold text-lg text-surface-dark leading-none">AML Guard</h1>
-          <p class="text-sm text-primary font-bold mt-1">Enterprise</p>
-        </div>
+      <div class="ml-3 animate-in fade-in slide-in-from-left-4 duration-500">
+        <h1 class="font-bold text-lg text-surface-dark leading-none">AML Guard</h1>
+        <p class="text-sm text-primary font-bold mt-1">Enterprise</p>
+      </div>
       }
     </div>
   </div>
@@ -23,78 +19,54 @@
   <!-- Navigation Links -->
   <nav class="flex-1 py-4 space-y-1 px-3 overflow-y-auto overflow-x-hidden custom-scrollbar">
     @if (isOpen()) {
-      <div class="px-3 mb-4 mt-2">
-        <p class="text-sm font-bold text-gray-800">Main Menu</p>
-      </div>
+    <div class="px-3 mb-4 mt-2">
+      <p class="text-sm font-bold text-gray-800">Main Menu</p>
+    </div>
     }
 
     @for (item of menuItems(); track item.fullPath) {
-      <a
-        [routerLink]="item.fullPath"
-        routerLinkActive="active-link"
-        [routerLinkActiveOptions]="{ exact: false }"
-        [class.justify-center]="!isOpen()"
-        class="flex items-center p-3 rounded-lg text-gray-800 hover:text-primary hover:bg-primary-lighter transition-all duration-200 group relative"
-      >
-        <div
-          class="absolute left-0 w-1 h-6 bg-primary rounded-r-full scale-y-0 transition-transform duration-200 origin-center indicator"
-        ></div>
+    <a [routerLink]="item.fullPath" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: false }"
+      [class.justify-center]="!isOpen()"
+      class="flex items-center p-3 rounded-lg text-gray-800 hover:text-primary hover:bg-primary-lighter transition-all duration-200 group relative">
+      <div
+        class="absolute left-0 w-1 h-6 bg-primary rounded-r-full scale-y-0 transition-transform duration-200 origin-center indicator">
+      </div>
 
-        <div
-          [class.mr-3]="isOpen()"
-          class="flex items-center justify-center w-6 h-6 transition-transform duration-300 group-hover:scale-110"
-        >
-          <span
-            class="transition-colors flex items-center justify-center"
-            [innerHTML]="sanitize(item.icon)"
-          ></span>
-        </div>
+      <div [class.mr-3]="isOpen()"
+        class="flex items-center justify-center w-6 h-6 transition-transform duration-300 group-hover:scale-110">
+        <span class="transition-colors flex items-center justify-center" [innerHTML]="sanitize(item.icon)"></span>
+      </div>
 
-        @if (isOpen()) {
-          <span class="font-medium whitespace-nowrap animate-in fade-in duration-300">
-            {{ item.label }}
-          </span>
-        }
+      @if (isOpen()) {
+      <span class="font-medium whitespace-nowrap animate-in fade-in duration-300">
+        {{ item.label }}
+      </span>
+      }
 
-        <!-- Tooltip for collapsed state -->
-        @if (!isOpen()) {
-          <div
-            class="absolute left-16 bg-surface-dark text-white px-3 py-2 rounded-md text-sm opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-xl"
-          >
-            {{ item.label }}
-          </div>
-        }
-      </a>
+      <!-- Tooltip for collapsed state -->
+      @if (!isOpen()) {
+      <div
+        class="absolute left-16 bg-surface-dark text-white px-3 py-2 rounded-md text-sm opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-xl">
+        {{ item.label }}
+      </div>
+      }
+    </a>
     }
   </nav>
 
   <!-- Footer / Bottom Section -->
   <div class="p-4 border-t border-surface-light bg-surface-light/50">
-    <button
-      (click)="toggle.emit()"
-      [class.justify-center]="!isOpen()"
-      class="w-full flex items-center p-3 rounded-lg text-gray-800 hover:text-surface-dark hover:bg-surface transition-all duration-200 group shadow-sm hover:shadow-md border border-transparent hover:border-secondary-lighter"
-    >
+    <button (click)="toggle.emit()" [class.justify-center]="!isOpen()"
+      class="w-full flex items-center p-3 rounded-lg text-gray-800 hover:text-surface-dark hover:bg-surface transition-all duration-200 group shadow-sm hover:shadow-md border border-transparent hover:border-secondary-lighter">
       <div [class.mr-3]="isOpen()" class="flex items-center justify-center w-6 h-6">
         <span class="transition-all duration-300" [class.rotate-180]="!isOpen()">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-            />
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
           </svg>
         </span>
       </div>
       @if (isOpen()) {
-        <span class="font-medium whitespace-nowrap"> Collapse </span>
+      <span class="font-medium whitespace-nowrap"></span>
       }
     </button>
   </div>

@@ -22,8 +22,13 @@ export interface LoginData {
 export type LoginResponse = ApiResponse<LoginData>;
 
 export interface User {
+  firstName?: string;
+  lastName?: string;
   name?: string;
   email: string;
   role: string;
+  userCode?: string;
   tenantId?: string;
+  isActive?: boolean;
+  assignedCasesCount?: number;
 }

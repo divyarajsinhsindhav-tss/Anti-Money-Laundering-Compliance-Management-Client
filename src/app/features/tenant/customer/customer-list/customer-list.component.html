@@ -3,7 +3,6 @@
   <div class="flex justify-between items-end mb-10 border-b border-secondary/10 pb-8">
     <div>
       <h1 class="text-3xl font-bold text-surface-dark tracking-tight mb-2">Customer Listing</h1>
-      <p class="text-secondary text-sm">Comprehensive listing and management of all registered customers.</p>
     </div>
     <div class="flex items-center gap-4">
       <span class="text-sm font-bold text-gray-800">{{ totalElements() }} Total Customers</span>
@@ -17,17 +16,16 @@
       <div class="w-full md:w-96">
         <label class="block text-sm font-bold text-gray-800 mb-2">Search Customer</label>
         <div class="relative group">
-          <input
-            type="text"
-            [ngModel]="searchQuery()"
-            (ngModelChange)="onSearch($event)"
+          <input type="text" [ngModel]="searchQuery()" (ngModelChange)="onSearch($event)"
             placeholder="Search by name or CIF..."
             class="w-full bg-white border border-secondary/20 focus:border-primary px-4 py-2 text-sm text-surface-dark outline-none transition-all hover:bg-surface-light shadow-sm pl-10"
-            style="border-radius: 0"
-          />
-          <div class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            style="border-radius: 0" />
+          <div
+            class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
             </svg>
           </div>
         </div>
@@ -40,19 +38,18 @@
         <div class="flex items-center gap-3 border-r border-secondary/10 pr-6">
           <span class="text-sm font-bold text-gray-800">Show</span>
           <div class="relative group">
-            <select
-              [ngModel]="size()"
-              (ngModelChange)="onPageSizeChange($event)"
+            <select [ngModel]="size()" (ngModelChange)="onPageSizeChange($event)"
               class="appearance-none bg-white border border-secondary/20 pl-3 pr-8 py-1.5 text-sm font-bold text-gray-800 outline-none focus:border-primary transition-all cursor-pointer hover:bg-white min-w-[70px]"
-              style="border-radius: 0"
-            >
+              style="border-radius: 0">
               <option [value]="5">5</option>
               <option [value]="10">10</option>
               <option [value]="25">25</option>
               <option [value]="50">50</option>
             </select>
-            <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <div
+              class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-secondary/30 group-hover:text-primary transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                 <path d="m6 9 6 6 6-6" />
               </svg>
             </div>
@@ -60,31 +57,31 @@
           <span class="text-sm font-bold text-gray-800">Entries</span>
         </div>
         <div class="text-sm text-gray-800 font-bold">
-          Showing {{ page() * size() + 1 }} - {{ (page() + 1) * size() > totalElements() ? totalElements() : (page() + 1) * size() }} of {{ totalElements() }} records
+          Showing {{ page() * size() + 1 }} - {{ (page() + 1) * size() > totalElements() ? totalElements() : (page() +
+          1) * size() }} of {{ totalElements() }} records
         </div>
       </div>
 
       <!-- Pagination Controls -->
       <div class="flex items-center gap-4">
-        <span class="text-xs font-bold text-gray-800 uppercase tracking-widest">Page {{ page() + 1 }} of {{ totalPages() }}</span>
+        <span class="text-xs font-bold text-gray-800 uppercase tracking-widest">Page {{ page() + 1 }} of {{ totalPages()
+          }}</span>
         <div class="flex gap-1">
-          <button
-            (click)="prevPage()"
-            [disabled]="page() === 0 || isLoading()"
+          <button (click)="prevPage()" [disabled]="page() === 0 || isLoading()"
             class="p-2 border border-secondary/20 hover:border-primary disabled:opacity-30 transition-all bg-white hover:bg-gray-50 group shadow-sm"
-            style="border-radius: 0"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 group-hover:text-primary">
+            style="border-radius: 0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+              class="text-gray-500 group-hover:text-primary">
               <path d="m15 18-6-6 6-6" />
             </svg>
           </button>
-          <button
-            (click)="nextPage()"
-            [disabled]="(page() + 1) * size() >= totalElements() || isLoading()"
+          <button (click)="nextPage()" [disabled]="(page() + 1) * size() >= totalElements() || isLoading()"
             class="p-2 border border-secondary/20 hover:border-primary disabled:opacity-30 transition-all bg-white hover:bg-gray-50 group shadow-sm"
-            style="border-radius: 0"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 group-hover:text-primary">
+            style="border-radius: 0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+              class="text-gray-500 group-hover:text-primary">
               <path d="m9 18 6-6-6-6" />
             </svg>
           </button>
@@ -96,64 +93,67 @@
   <!-- Table -->
   <div class="bg-white border border-secondary/10 shadow-sm overflow-hidden">
     @if (isLoading()) {
-      <div class="p-32 flex flex-col items-center">
-        <div class="relative w-12 h-12 mb-6">
-          <div class="absolute inset-0 border-4 border-primary/30 rounded-none"></div>
-          <div class="absolute inset-0 border-4 border-primary border-t-transparent animate-spin rounded-none"></div>
-        </div>
-        <span class="text-sm font-bold text-gray-800 animate-pulse">Loading Customers...</span>
+    <div class="p-32 flex flex-col items-center">
+      <div class="relative w-12 h-12 mb-6">
+        <div class="absolute inset-0 border-4 border-primary/30 rounded-none"></div>
+        <div class="absolute inset-0 border-4 border-primary border-t-transparent animate-spin rounded-none"></div>
       </div>
+      <span class="text-sm font-bold text-gray-800 animate-pulse">Loading Customers...</span>
+    </div>
     } @else {
-      <div class="overflow-x-auto custom-scrollbar">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="bg-gray-50/80 border-b border-secondary/10">
-              <th class="py-5 px-8 text-sm font-bold text-gray-800">CIF Number</th>
-              <th class="py-5 px-8 text-sm font-bold text-gray-800">Full Name</th>
-              <th class="py-5 px-8 text-sm font-bold text-gray-800">Date of Birth</th>
-              <th class="py-5 px-8 text-sm font-bold text-gray-800">Annual Income</th>
-              <th class="py-5 px-8 text-sm font-bold text-gray-800 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-secondary/5">
-            @for (customer of customers(); track customer.customerId) {
-              <tr class="group hover:bg-surface-light/30 transition-all duration-300">
-                <td class="py-6 px-8">
-                  <span class="text-sm font-mono font-bold text-primary tracking-tight">{{ customer.cif }}</span>
-                </td>
-                <td class="py-6 px-8">
-                  <span class="text-sm font-bold text-surface-dark group-hover:text-primary transition-colors">{{ customer.fullName }}</span>
-                </td>
-                <td class="py-6 px-8 text-sm text-secondary font-medium">
-                  {{ customer.dob | date: 'MMM d, y' }}
-                </td>
-                <td class="py-6 px-8 text-sm font-bold text-gray-800">
-                  ₹{{ customer.income | number:'1.2-2' }}
-                </td>
-                <td class="py-6 px-8 text-right">
-                  <button
-                    (click)="viewDetail(customer.customerId)"
-                    class="text-sm font-bold text-primary hover:text-primary/70 transition-colors border-none bg-transparent cursor-pointer"
-                  >
-                    View Details
-                  </button>
-                </td>
-              </tr>
-            } @empty {
-              <tr>
-                <td colspan="5" class="py-24 text-center">
-                  <div class="flex flex-col items-center gap-4 opacity-20">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                    </svg>
-                    <span class="text-sm font-bold text-gray-800">No customers found matching your criteria</span>
-                  </div>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+    <div class="overflow-x-auto custom-scrollbar">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-gray-50/80 border-b border-secondary/10">
+            <th class="py-5 px-8 text-sm font-bold text-gray-800">CIF Number</th>
+            <th class="py-5 px-8 text-sm font-bold text-gray-800">Full Name</th>
+            <th class="py-5 px-8 text-sm font-bold text-gray-800">Date of Birth</th>
+            <th class="py-5 px-8 text-sm font-bold text-gray-800">Annual Income</th>
+            <th class="py-5 px-8 text-sm font-bold text-gray-800 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-secondary/5">
+          @for (customer of customers(); track customer.customerId) {
+          <tr class="group hover:bg-surface-light/30 transition-all duration-300">
+            <td class="py-6 px-8">
+              <span class="text-sm font-mono font-bold text-primary tracking-tight">{{ customer.cif }}</span>
+            </td>
+            <td class="py-6 px-8">
+              <span class="text-sm font-bold text-surface-dark group-hover:text-primary transition-colors">{{
+                customer.fullName }}</span>
+            </td>
+            <td class="py-6 px-8 text-sm text-secondary font-medium">
+              {{ customer.dob | date: 'MMM d, y' }}
+            </td>
+            <td class="py-6 px-8 text-sm font-bold text-gray-800">
+              ₹{{ customer.income | number:'1.2-2' }}
+            </td>
+            <td class="py-6 px-8 text-right">
+              <button (click)="viewDetail(customer.customerId)"
+                class="text-sm font-bold text-primary hover:text-primary/70 transition-colors border-none bg-transparent cursor-pointer">
+                View Details
+              </button>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="5" class="py-24 text-center">
+              <div class="flex flex-col items-center gap-4 opacity-20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                <span class="text-sm font-bold text-gray-800">No customers found matching your criteria</span>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
     }
   </div>
 </div>

@@ -2,21 +2,10 @@
   <!-- Header Section -->
   <div class="mb-10 flex items-end justify-between border-b border-secondary/10 pb-8">
     <div class="flex items-center gap-6">
-      <div
-        class="w-20 h-20 bg-primary/5 flex items-center justify-center text-primary border border-primary/30"
-        style="border-radius: 0"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
-          height="32"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
+      <div class="w-20 h-20 bg-primary/5 flex items-center justify-center text-primary border border-primary/30"
+        style="border-radius: 0">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
           <circle cx="12" cy="7" r="4" />
         </svg>
@@ -32,24 +21,16 @@
     </div>
 
     <div class="flex gap-1 bg-surface-light p-1" style="border-radius: 0">
-      <button
-        (click)="setActiveTab('general')"
-        [class.bg-white]="activeTab() === 'general'"
-        [class.shadow-sm]="activeTab() === 'general'"
-        [class.text-surface-dark]="activeTab() === 'general'"
+      <button (click)="setActiveTab('general')" [class.bg-white]="activeTab() === 'general'"
+        [class.shadow-sm]="activeTab() === 'general'" [class.text-surface-dark]="activeTab() === 'general'"
         class="px-6 py-2 text-sm font-bold text-gray-800 hover:text-surface-dark transition-all"
-        style="border-radius: 0"
-      >
+        style="border-radius: 0">
         General Information
       </button>
-      <button
-        (click)="setActiveTab('security')"
-        [class.bg-white]="activeTab() === 'security'"
-        [class.shadow-sm]="activeTab() === 'security'"
-        [class.text-surface-dark]="activeTab() === 'security'"
+      <button (click)="setActiveTab('security')" [class.bg-white]="activeTab() === 'security'"
+        [class.shadow-sm]="activeTab() === 'security'" [class.text-surface-dark]="activeTab() === 'security'"
         class="px-6 py-2 text-sm font-bold text-gray-800 hover:text-surface-dark transition-all"
-        style="border-radius: 0"
-      >
+        style="border-radius: 0">
         Security & Password
       </button>
     </div>
@@ -58,133 +39,109 @@
   <div class="grid grid-cols-1 gap-12">
     <!-- General Information Tab -->
     @if (activeTab() === 'general') {
-      <div class="animate-in slide-in-from-bottom-4 duration-500">
-        <div class="space-y-10 max-w-4xl">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-            <div class="space-y-1">
-              <label class="text-sm font-bold text-gray-800/60 block">Full Legal Name</label>
-              <p class="text-base font-medium text-surface-dark">
-                {{ user()?.name || 'Authorized System User' }}
-              </p>
-            </div>
-            <div class="space-y-1">
-              <label class="text-sm font-bold text-gray-800/60 block">Registered Email</label>
-              <p class="text-base font-medium text-surface-dark">{{ user()?.email }}</p>
-            </div>
-            <div class="space-y-1">
-              <label class="text-sm font-bold text-gray-800/60 block">Institutional Role</label>
-              <p class="text-base font-medium text-surface-dark">{{ user()?.role }}</p>
-            </div>
-            <div class="space-y-1">
-              <label class="text-sm font-bold text-gray-800/60 block">Environment Context</label>
-              <p class="text-base font-medium text-surface-dark">
-                {{ user()?.tenantId || 'System Root' }}
-              </p>
-            </div>
+    <div class="animate-in slide-in-from-bottom-4 duration-500">
+      <div class="space-y-10 max-w-4xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+          <div class="space-y-1">
+            <label class="text-sm font-bold text-gray-800/60 block">Full Legal Name</label>
+            <p class="text-base font-medium text-surface-dark">
+              {{ user()?.name || 'Authorized System User' }}
+            </p>
           </div>
-
-          <div class="p-6 bg-surface-light border-l-4 border-primary/20">
-            <p class="text-sm text-secondary/70 italic leading-relaxed">
-              Profile update functionality is currently restricted for your security level. Please
-              contact your system administrator for modifications to your core profile data.
+          <div class="space-y-1">
+            <label class="text-sm font-bold text-gray-800/60 block">Registered Email</label>
+            <p class="text-base font-medium text-surface-dark">{{ user()?.email }}</p>
+          </div>
+          <div class="space-y-1">
+            <label class="text-sm font-bold text-gray-800/60 block">Institutional Role</label>
+            <p class="text-base font-medium text-surface-dark">{{ user()?.role }}</p>
+          </div>
+          <div class="space-y-1">
+            <label class="text-sm font-bold text-gray-800/60 block">Environment Context</label>
+            <p class="text-base font-medium text-surface-dark">
+              {{ user()?.tenantId || 'System Root' }}
             </p>
           </div>
         </div>
       </div>
+    </div>
     }
 
     <!-- Security Tab (Change Password) -->
     @if (activeTab() === 'security') {
-      <div class="max-w-2xl animate-in slide-in-from-bottom-4 duration-500">
-        <div class="mb-8">
-          <h3 class="text-base font-semibold text-surface-dark">Update Password</h3>
-          <p class="text-sm text-secondary mt-1">
-            Ensure your account stays secure by using a complex password that you don't use
-            elsewhere.
-          </p>
+    <div class="max-w-2xl animate-in slide-in-from-bottom-4 duration-500">
+      <div class="mb-8">
+        <h3 class="text-base font-semibold text-surface-dark">Update Password</h3>
+        <p class="text-sm text-secondary mt-1">
+          Ensure your account stays secure by using a complex password that you don't use
+          elsewhere.
+        </p>
+      </div>
+
+      <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="space-y-6">
+        @if (passwordError()) {
+        <div
+          class="p-4 bg-danger/5 border border-danger/30 text-danger text-sm font-medium animate-in fade-in slide-in-from-top-2">
+          {{ passwordError() }}
+        </div>
+        }
+
+        @if (passwordSuccess()) {
+        <div
+          class="p-4 bg-success/5 border border-success/30 text-success text-sm font-medium animate-in fade-in slide-in-from-top-2">
+          {{ passwordSuccess() }}
+        </div>
+        }
+
+        <div class="space-y-4">
+          <div class="space-y-1">
+            <label class="text-sm font-bold text-gray-800/60 block">Current Password</label>
+            <input type="password" formControlName="oldPassword" placeholder="••••••••"
+              class="w-full bg-white border border-secondary/20 focus:border-primary focus:ring-1 focus:ring-primary/20 p-3 text-sm outline-none transition-all"
+              style="border-radius: 0" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div class="space-y-1">
+              <label class="text-sm font-bold text-gray-800/60 block">New Password</label>
+              <input type="password" formControlName="newPassword" placeholder="Minimum 8 characters"
+                class="w-full bg-white border border-secondary/20 focus:border-primary focus:ring-1 focus:ring-primary/20 p-3 text-sm outline-none transition-all"
+                style="border-radius: 0" />
+              @if (
+              passwordForm.get('newPassword')?.touched &&
+              passwordForm.get('newPassword')?.errors?.['minlength']
+              ) {
+              <p class="text-sm text-danger mt-1">
+                Password must be at least 8 characters long.
+              </p>
+              }
+            </div>
+            <div class="space-y-1">
+              <label class="text-sm font-bold text-gray-800/60 block">Confirm New Password</label>
+              <input type="password" formControlName="confirmPassword" placeholder="Re-enter password"
+                class="w-full bg-white border border-secondary/20 focus:border-primary focus:ring-1 focus:ring-primary/20 p-3 text-sm outline-none transition-all"
+                style="border-radius: 0" />
+              @if (passwordForm.touched && passwordForm.errors?.['mismatch']) {
+              <p class="text-sm text-danger mt-1">Passwords do not match.</p>
+              }
+            </div>
+          </div>
         </div>
 
-        <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="space-y-6">
-          @if (passwordError()) {
-            <div
-              class="p-4 bg-danger/5 border border-danger/30 text-danger text-sm font-medium animate-in fade-in slide-in-from-top-2"
-            >
-              {{ passwordError() }}
-            </div>
-          }
-
-          @if (passwordSuccess()) {
-            <div
-              class="p-4 bg-success/5 border border-success/30 text-success text-sm font-medium animate-in fade-in slide-in-from-top-2"
-            >
-              {{ passwordSuccess() }}
-            </div>
-          }
-
-          <div class="space-y-4">
-            <div class="space-y-1">
-              <label class="text-sm font-bold text-gray-800/60 block">Current Password</label>
-              <input
-                type="password"
-                formControlName="oldPassword"
-                placeholder="••••••••"
-                class="w-full bg-white border border-secondary/20 focus:border-primary focus:ring-1 focus:ring-primary/20 p-3 text-sm outline-none transition-all"
-                style="border-radius: 0"
-              />
-            </div>
-
-            <div class="grid grid-cols-2 gap-6">
-              <div class="space-y-1">
-                <label class="text-sm font-bold text-gray-800/60 block">New Password</label>
-                <input
-                  type="password"
-                  formControlName="newPassword"
-                  placeholder="Minimum 8 characters"
-                  class="w-full bg-white border border-secondary/20 focus:border-primary focus:ring-1 focus:ring-primary/20 p-3 text-sm outline-none transition-all"
-                  style="border-radius: 0"
-                />
-                @if (
-                  passwordForm.get('newPassword')?.touched &&
-                  passwordForm.get('newPassword')?.errors?.['minlength']
-                ) {
-                  <p class="text-sm text-danger mt-1">
-                    Password must be at least 8 characters long.
-                  </p>
-                }
-              </div>
-              <div class="space-y-1">
-                <label class="text-sm font-bold text-gray-800/60 block">Confirm New Password</label>
-                <input
-                  type="password"
-                  formControlName="confirmPassword"
-                  placeholder="Re-enter password"
-                  class="w-full bg-white border border-secondary/20 focus:border-primary focus:ring-1 focus:ring-primary/20 p-3 text-sm outline-none transition-all"
-                  style="border-radius: 0"
-                />
-                @if (passwordForm.touched && passwordForm.errors?.['mismatch']) {
-                  <p class="text-sm text-danger mt-1">Passwords do not match.</p>
-                }
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-6">
-            <button
-              type="submit"
-              [disabled]="passwordForm.invalid || isChangingPassword()"
-              class="bg-surface-dark text-white px-10 py-3 text-sm font-bold hover:bg-black transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3"
-              style="border-radius: 0"
-            >
-              @if (isChangingPassword()) {
-                <div class="w-3 h-3 border-2 border-white/20 border-t-white animate-spin"></div>
-                Processing...
-              } @else {
-                Authorize Password Change
-              }
-            </button>
-          </div>
-        </form>
-      </div>
+        <div class="pt-6">
+          <button type="submit" [disabled]="passwordForm.invalid || isChangingPassword()"
+            class="bg-surface-dark text-white px-10 py-3 text-sm font-bold hover:bg-black transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3"
+            style="border-radius: 0">
+            @if (isChangingPassword()) {
+            <div class="w-3 h-3 border-2 border-white/20 border-t-white animate-spin"></div>
+            Processing...
+            } @else {
+            Authorize Password Change
+            }
+          </button>
+        </div>
+      </form>
+    </div>
     }
   </div>
 </div>

@@ -40,10 +40,8 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // If user info isn't available, fetch it
-    if (!this.user()) {
-      this.authService.fetchCurrentUser().subscribe();
-    }
+    // Always fetch fresh data for the profile page
+    this.authService.fetchCurrentUser().subscribe();
   }
 
   passwordMatchValidator(g: FormGroup) {

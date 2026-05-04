@@ -25,8 +25,11 @@
       <button (click)="loadTenantDetail(tenantDetail()?.tenant?.tenantCode || '')"
         class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-surface-dark border border-secondary/10 hover:bg-surface-light transition-all group"
         style="border-radius: 0">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-secondary group-hover:rotate-180 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        <svg xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 text-secondary group-hover:rotate-180 transition-transform duration-500" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
         </svg>
         Refresh Data
       </button>
@@ -129,7 +132,7 @@
           <span class="text-3xl font-light text-surface-dark leading-none">{{
             tenantDetail()?.storageMetrics?.totalSchemaSize || '0.0 MB'
             }}</span>
-          <span class="text-sm font-bold text-gray-800/40 mb-1">Allocated</span>
+          <span class="text-sm font-bold text-gray-800/40 mb-1">Used</span>
         </div>
       </div>
     </div>
@@ -329,9 +332,9 @@
       style="border-radius: 0">
       <header class="p-6 border-b border-secondary/5 flex justify-between items-center bg-surface-light/30">
         <div>
-          <h3 class="text-sm font-bold text-gray-800">Available Detection Packages</h3>
+          <h3 class="text-sm font-bold text-gray-800">Available Scenarios</h3>
           <p class="text-sm text-secondary/60 mt-1">
-            Select a scenario to deploy to this institutional node.
+            Select a scenario to assign to this tenant.
           </p>
         </div>
         <button (click)="closeAssignModal()" class="text-secondary/40 hover:text-surface-dark transition-colors">
@@ -363,7 +366,7 @@
               </p>
             </div>
             <div class="ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
-              <span class="text-sm font-bold text-primary">Deploy Package</span>
+              <span class="text-sm font-bold text-primary">Assign Scenario</span>
             </div>
           </div>
           } @empty {
@@ -388,7 +391,7 @@
       <div class="absolute inset-0 bg-white/80 backdrop-blur-[2px] flex items-center justify-center z-20">
         <div class="flex flex-col items-center">
           <div class="w-8 h-8 border-2 border-primary/20 border-t-primary animate-spin mb-4"></div>
-          <p class="text-sm font-bold text-primary">Deploying Architecture...</p>
+          <p class="text-sm font-bold text-primary">Assigning Scenario...</p>
         </div>
       </div>
       }
@@ -514,7 +517,7 @@
             <tr>
               <td colspan="4" class="py-24 text-center">
                 <p class="text-secondary/40 font-light italic">
-                  No historical job records available for this cluster.
+                  No historical job records available for this tenant.
                 </p>
               </td>
             </tr>

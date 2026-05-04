@@ -116,7 +116,11 @@ export class AuthService {
       .get<ApiResponse<User>>(`${API_CONFIG.BASE_URL}/auth/me`)
       .pipe(
         tap((response) => {
-          this._user.set(response.data);
+          const data = response.data;
+          if (data.firstName && data.lastName) {
+            data.name = `${data.firstName} ${data.lastName}`;
+          }
+          this._user.set(data);
         }),
         map((response) => response.data),
         catchError(() => {
