@@ -51,4 +51,10 @@ export class CaseService {
   ): Observable<ApiResponse<CaseDetail>> {
     return this.http.patch<ApiResponse<CaseDetail>>(`${this.baseUrl}/${caseCode}/status`, request);
   }
+
+  downloadPdf(caseCode: string): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${caseCode}/download-pdf`, {
+      responseType: 'blob',
+    });
+  }
 }

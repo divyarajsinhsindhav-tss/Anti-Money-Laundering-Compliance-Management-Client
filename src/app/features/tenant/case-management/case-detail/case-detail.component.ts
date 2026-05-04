@@ -42,6 +42,7 @@ export class CaseDetailComponent implements OnInit {
 
   // Status update states
   isUpdatingStatus = signal<boolean>(false);
+  isDownloadingPdf = signal<boolean>(false);
 
   // Custom Modal States
   showStatusModal = signal<boolean>(false);
@@ -222,5 +223,31 @@ export class CaseDetailComponent implements OnInit {
   closeModal(): void {
     this.showStatusModal.set(false);
     this.isUpdatingStatus.set(false);
+  }
+
+  downloadPdf(): void {
+    const code = this.caseId();
+    if (!code) return;
+
+    this.isDownloadingPdf.set(true);
+    this.caseService.downloadPdf(code).subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `case-${code}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        this.isDownloadingPdf.set(false);
+        this.toastService.success('PDF downloaded successfully');
+      },
+      error: (err) => {
+        console.error('Failed to download PDF:', err);
+        this.toastService.error('Failed to download PDF');
+        this.isDownloadingPdf.set(false);
+      },
+    });
   }
 }
